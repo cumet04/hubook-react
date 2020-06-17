@@ -13,6 +13,8 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
+    "@octokit/graphql": "^4.5.1",
+    "@octokit/rest": "^18.0.0",
     "@snowpack/app-scripts-react": "^1.2.0",
     "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
