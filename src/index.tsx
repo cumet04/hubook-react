@@ -4,32 +4,6 @@ import App from "./App";
 import "ress";
 import "./index.css";
 
-import { fetchIssue, fetchPullRequest } from "./services/issue";
-import { fetchNotifications } from "./services/notification";
-
-const { apiBase, apiToken } = JSON.parse(
-  localStorage.getItem("hubook-settings") || "{}"
-);
-if (apiBase && apiToken) {
-  // dummy code
-  fetchNotifications(apiBase, apiToken).then((resp) => {
-    console.log(resp);
-
-    const first = resp.notifications[0];
-    if (first.type == "PullRequest") {
-      fetchPullRequest(apiBase, apiToken, first.subjectIdentifier).then(
-        (issue) => {
-          console.log(issue);
-        }
-      );
-    } else if (first.type == "Issue") {
-      fetchIssue(apiBase, apiToken, first.subjectIdentifier).then((issue) => {
-        console.log(issue);
-      });
-    }
-  });
-}
-
 ReactDOM.render(
   <React.StrictMode>
     <App />

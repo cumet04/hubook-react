@@ -8,7 +8,7 @@ function octokit(base: string, token: string) {
   return res;
 }
 
-type Notification = {
+export type Notification = {
   id: string;
   updatedAt: Date;
   lastReadAt: Date;
