@@ -10,6 +10,9 @@ cd $(dirname $0)/..
 # (I tried some rollup-plugins for node)
 
 file="node_modules/@octokit/request/dist-web/index.js"
+before=$(cat $file)
 sed -i 's|^import nodeFetch|//import nodeFetch|' $file
 sed -i 's|^\s*const fetch|//const fetch|' $file
 
+# display changed lines
+echo "$before" | diff - $file
