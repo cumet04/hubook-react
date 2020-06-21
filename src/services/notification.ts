@@ -15,6 +15,7 @@ export type Notification = {
   title: string;
   type: string;
   subjectIdentifier: {
+    // FIXME: same as issue/Identifier
     owner: string;
     name: string;
     number: number;

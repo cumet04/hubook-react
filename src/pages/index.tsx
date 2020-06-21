@@ -1,7 +1,6 @@
 import React from "react";
 import css from "./index.module.css";
 import { fetchNotifications, Notification } from "../services/notification";
-import { fetchIssue, fetchPullRequest } from "../services/issue";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
@@ -36,11 +35,12 @@ export default class extends React.Component<PropType, StateType> {
 
   render() {
     const items = this.state.notifications;
-    const selected = items[0];
-    let content;
-    if (selected.type == "Issue") {
-      const issue = fetchIssue();
-    } else {
+    const selected = items[0] || null;
+    let detailDom;
+    if (selected?.type == "Issue") {
+      detailDom = <IssueDetail notification={selected} />;
+    } else if (selected?.type == "PullRequest") {
+      detailDom = <PullRequestDetail notification={selected} />;
     }
     return (
       <div>
@@ -52,7 +52,7 @@ export default class extends React.Component<PropType, StateType> {
             ))}
           </ol>
         </div>
-        <div className={css.content}>{/* content */}</div>
+        <div className={css.content}>{detailDom}</div>
       </div>
     );
   }
