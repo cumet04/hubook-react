@@ -10,23 +10,6 @@ interface TQueryResult {
   repository: Repository;
 }
 
-export type Identifier = {
-  owner: string;
-  name: string;
-  number: number;
-};
-
-export type Author = {
-  avatarUrl: string;
-  login: string;
-};
-
-export type Comment = {
-  author: Author;
-  body: string;
-  publishedAt: Date;
-};
-
 const authorQuery = () => `
 author {
   avatarUrl
@@ -52,7 +35,7 @@ function parseDate(datestr: string) {
   return new Date(Date.parse(datestr));
 }
 
-function mapAuthorData(actor: Actor | null | undefined): Author {
+function mapAuthorData(actor: Actor | null | undefined): App.Author {
   if (!actor) {
     console.debug(actor);
     throw Error("author is empty");
@@ -73,9 +56,9 @@ function mapCommentsData(comments: IssueCommentConnection) {
       (raw) =>
         ({
           author: mapAuthorData(raw.author),
-          body: raw.bodyHTML,
+          body: raw.bodyHTML as string,
           publishedAt: parseDate(raw.publishedAt),
-        } as Comment)
+        } as App.Comment)
     ),
     nextCommentCursor: page.hasNextPage ? page.endCursor || null : null,
   };
@@ -83,22 +66,11 @@ function mapCommentsData(comments: IssueCommentConnection) {
 
 // ---------- issue ----------
 
-export type Issue = {
-  identifier: Identifier;
-  title: string;
-  status: "open" | "closed";
-  author: Author;
-  body: string;
-  publishedAt: Date;
-  comments: Comment[];
-  nextCommentCursor: string | null;
-};
-
 export async function fetchIssue(
   apiBase: string,
   apiToken: string,
-  { owner, name, number }: Identifier
-): Promise<Issue> {
+  { owner, name, number }: App.Identifier
+): Promise<App.Issue> {
   const per = 5;
   const raw = (
     await graphql<TQueryResult>(
@@ -129,16 +101,12 @@ export async function fetchIssue(
     console.debug(raw);
     throw Error("request issue failed");
   }
-  if (!raw.author) {
-    console.debug(raw);
-    throw Error("issue author is empty");
-  }
 
   return {
     identifier: { owner, name, number },
     title: raw.title,
     status: raw.closed ? "closed" : "open",
-    author: raw.author,
+    author: mapAuthorData(raw.author),
     body: raw.bodyHTML,
     publishedAt: parseDate(raw.publishedAt),
     ...mapCommentsData(raw.comments),
@@ -147,24 +115,11 @@ export async function fetchIssue(
 
 // ---------- pull-request ----------
 
-export type PullRequest = {
-  identifier: Identifier;
-  title: string;
-  baseRefName: string;
-  headRefName: string;
-  status: "open" | "draft" | "merged" | "closed";
-  author: Author;
-  body: string;
-  publishedAt: Date;
-  comments: Comment[];
-  nextCommentCursor: string | null;
-};
-
 export async function fetchPullRequest(
   apiBase: string,
   apiToken: string,
-  { owner, name, number }: Identifier
-): Promise<PullRequest> {
+  { owner, name, number }: App.Identifier
+): Promise<App.PullRequest> {
   const per = 5;
   const raw = (
     await graphql<TQueryResult>(
@@ -199,10 +154,6 @@ export async function fetchPullRequest(
     console.debug(raw);
     throw Error("request pullrequest failed");
   }
-  if (!raw.author) {
-    console.debug(raw);
-    throw Error("issue author is empty");
-  }
 
   return {
     identifier: { owner, name, number },
@@ -215,7 +166,7 @@ export async function fetchPullRequest(
       if (raw.closed) return "closed";
       return "open";
     })(),
-    author: raw.author,
+    author: mapAuthorData(raw.author),
     body: raw.bodyHTML,
     publishedAt: parseDate(raw.publishedAt),
     ...mapCommentsData(raw.comments),

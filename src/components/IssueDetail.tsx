@@ -1,15 +1,14 @@
 import React from "react";
-import type { Notification } from "../services/notification";
-import { fetchIssue, Issue } from "../services/issue";
+import { fetchIssue } from "../services/issue";
 
 import MarkdownContent from "../components/MarkdownContent";
 
 type PropType = {
-  notification: Notification;
+  notification: App.Notification;
 };
 
 type StateType = {
-  issue: Issue | null;
+  issue: App.Issue | null;
 };
 
 export default class extends React.Component<PropType, StateType> {

@@ -8,20 +8,6 @@ function octokit(base: string, token: string) {
   return res;
 }
 
-export type Notification = {
-  id: string;
-  updatedAt: Date;
-  lastReadAt: Date;
-  title: string;
-  type: string;
-  subjectIdentifier: {
-    // FIXME: same as issue/Identifier
-    owner: string;
-    name: string;
-    number: number;
-  };
-};
-
 function parseDate(datestr: string) {
   return new Date(Date.parse(datestr));
 }
@@ -69,7 +55,7 @@ export async function fetchNotifications(
           name: raw.repository.name,
           number: parseInt(raw.subject.url.split("/").pop() || ""), // TODO: fix hack
         },
-      } as Notification;
+      } as App.Notification;
     }),
   };
 }

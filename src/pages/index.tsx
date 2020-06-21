@@ -1,6 +1,6 @@
 import React from "react";
 import css from "./index.module.css";
-import { fetchNotifications, Notification } from "../services/notification";
+import { fetchNotifications } from "../services/notification";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
@@ -9,7 +9,7 @@ import PullRequestDetail from "../components/PullRequestDetail";
 type PropType = {};
 
 type StateType = {
-  notifications: Notification[];
+  notifications: App.Notification[];
 };
 
 export default class extends React.Component<PropType, StateType> {

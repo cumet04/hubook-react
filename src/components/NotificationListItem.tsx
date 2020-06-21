@@ -1,8 +1,7 @@
 import React from "react";
-import type { Notification } from "../services/notification";
 
 type PropType = {
-  notification: Notification;
+  notification: App.Notification;
 };
 
 type StateType = {};
