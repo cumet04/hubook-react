@@ -1,0 +1,11 @@
+.notifications {
+  & .title {
+    font-size: 1.6rem;
+  }
+
+  & .list {
+  }
+}
+
+.content {
+}

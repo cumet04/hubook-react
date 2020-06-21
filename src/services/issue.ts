@@ -83,7 +83,7 @@ function mapCommentsData(comments: IssueCommentConnection) {
 
 // ---------- issue ----------
 
-type Issue = {
+export type Issue = {
   identifier: Identifier;
   title: string;
   status: "open" | "closed";
@@ -147,7 +147,7 @@ export async function fetchIssue(
 
 // ---------- pull-request ----------
 
-type PullRequest = {
+export type PullRequest = {
   identifier: Identifier;
   title: string;
   baseRefName: string;
