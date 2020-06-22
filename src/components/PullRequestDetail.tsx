@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { fetchPullRequest } from "../services/issue";
 
 import MarkdownContent from "../components/MarkdownContent";
@@ -7,40 +7,26 @@ type PropType = {
   notification: App.Notification;
 };
 
-type StateType = {
-  pullrequest: App.PullRequest | null;
-};
+export default function IssueDetail(props: PropType) {
+  const [pullreq, setPullreq] = useState<App.PullRequest | null>(null);
 
-export default class extends React.Component<PropType, StateType> {
-  constructor(props: PropType) {
-    super(props);
-    this.state = { pullrequest: null };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     const { apiBase, apiToken } = JSON.parse(
       localStorage.getItem("hubook-settings") || "{}"
     );
     fetchPullRequest(
       apiBase,
       apiToken,
-      this.props.notification.subjectIdentifier
-    ).then((pr) => {
-      this.setState({
-        pullrequest: pr,
-      });
-    });
-  }
+      props.notification.subjectIdentifier
+    ).then((pullreq) => setPullreq(pullreq));
+  }, []);
 
-  render() {
-    const pr = this.state.pullrequest;
-    if (pr) {
-      return (
-        <article>
-          <header>{pr.title}</header>
-          <MarkdownContent content={pr.body}></MarkdownContent>
-        </article>
-      );
-    } else return <article></article>;
-  }
+  if (pullreq) {
+    return (
+      <article>
+        <header>{pullreq.title}</header>
+        <MarkdownContent content={pullreq.body}></MarkdownContent>
+      </article>
+    );
+  } else return <article></article>;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { fetchIssue } from "../services/issue";
 
 import MarkdownContent from "../components/MarkdownContent";
@@ -7,40 +7,26 @@ type PropType = {
   notification: App.Notification;
 };
 
-type StateType = {
-  issue: App.Issue | null;
-};
+export default function IssueDetail(props: PropType) {
+  const [issue, setIssue] = useState<App.Issue | null>(null);
 
-export default class extends React.Component<PropType, StateType> {
-  constructor(props: PropType) {
-    super(props);
-    this.state = { issue: null };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     const { apiBase, apiToken } = JSON.parse(
       localStorage.getItem("hubook-settings") || "{}"
     );
     fetchIssue(
       apiBase,
       apiToken,
-      this.props.notification.subjectIdentifier
-    ).then((issue) => {
-      this.setState({
-        issue: issue,
-      });
-    });
-  }
+      props.notification.subjectIdentifier
+    ).then((issue) => setIssue(issue));
+  }, []);
 
-  render() {
-    const issue = this.state.issue;
-    if (issue) {
-      return (
-        <article>
-          <header>{issue.title}</header>
-          <MarkdownContent content={issue.body}></MarkdownContent>
-        </article>
-      );
-    } else return <article></article>;
-  }
+  if (issue) {
+    return (
+      <article>
+        <header>{issue.title}</header>
+        <MarkdownContent content={issue.body}></MarkdownContent>
+      </article>
+    );
+  } else return <article></article>;
 }

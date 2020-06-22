@@ -1,24 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 type PropType = {
   content: string;
 };
 
-type StateType = {
-  height: number;
-};
+export default function MarkdownContent(props: PropType) {
+  const elref = React.createRef<HTMLIFrameElement>();
+  const [height, setHeight] = useState(0);
 
-export default class extends React.Component<PropType, StateType> {
-  el: React.RefObject<HTMLIFrameElement>;
-
-  constructor(props: PropType) {
-    super(props);
-    this.state = { height: 0 };
-    this.el = React.createRef();
-  }
-
-  componentDidMount() {
-    const el = this.el.current;
+  useEffect(() => {
+    const el = elref.current;
     const doc = el?.contentDocument;
     if (!el || !doc) return;
 
@@ -26,30 +17,33 @@ export default class extends React.Component<PropType, StateType> {
       '<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css">';
     doc.body.className = "markdown-body"; // github-markdown-css's parent class
     doc.body.style.margin = "0"; // make inner.body.offsetHeight equal to content height
+    doc.body.style.height = "fit-content"; // 明示的に指定しない場合、縦長のcommentを表示 -> 短いのを表示
+    // した場合に直前のiframeのheightに引っ張られて大きいままになる
 
     const handler = () => {
       // wait for re-render content
-      setTimeout(() => {
-        this.setState({ height: doc.body.offsetHeight });
-      }, 0);
+      setTimeout(() => setHeight(doc.body.offsetHeight), 0);
     };
     // fit height when click <details> tag
     el.contentWindow?.addEventListener("click", handler);
     // fit height when window resized and line-break changed
     el.contentWindow?.addEventListener("resize", handler);
 
-    doc.body.innerHTML = this.props.content;
-    this.setState({ height: doc.body.offsetHeight });
-  }
+    doc.body.innerHTML = props.content;
+    setHeight(doc.body.offsetHeight);
+  }, []);
 
-  render() {
-    const style = {
-      border: "none",
-      width: "100%",
-      height: `${this.state.height}px`,
-    };
-    return (
-      <iframe ref={this.el} sandbox="allow-same-origin" style={style}></iframe>
-    );
-  }
+  const style = {
+    border: "none",
+    width: "100%",
+    height: `${height}px`,
+  };
+  return (
+    <iframe
+      ref={elref}
+      style={style}
+      sandbox="allow-same-origin"
+      scrolling="no"
+    ></iframe>
+  );
 }
