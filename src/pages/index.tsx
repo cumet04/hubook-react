@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import css from "./index.module.css";
-import { fetchNotifications } from "../services/notification";
+import CreateGithubClient from "../services/github";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
@@ -15,19 +15,16 @@ function detailDom(notification: App.Notification | null) {
   return null;
 }
 
+const GithubClient = CreateGithubClient();
+
 export default function Index() {
   const [notifications, setNotifications] = useState<App.Notification[]>([]);
   const [selected, setSelected] = useState<number>(-1);
 
   useEffect(() => {
-    const { apiBase, apiToken } = JSON.parse(
-      localStorage.getItem("hubook-settings") || "{}"
-    );
-    if (apiBase && apiToken) {
-      fetchNotifications(apiBase, apiToken).then((resp) => {
-        setNotifications(resp.notifications);
-      });
-    }
+    GithubClient.fetchNotifications()?.then((resp) => {
+      setNotifications(resp.notifications);
+    });
   }, []);
 
   const select = (n: number) => {

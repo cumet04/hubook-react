@@ -5,7 +5,6 @@ import type {
   IssueComment,
   Actor,
 } from "./github-v4";
-import Cache from "./cache";
 
 interface TQueryResult {
   repository: Repository;
@@ -65,24 +64,15 @@ function mapCommentsData(comments: IssueCommentConnection) {
   };
 }
 
-const identifierKey = (src: App.Identifier) =>
-  `${src.owner}/${src.name}/${src.number}`;
-
-const issueCache = new Cache<App.Issue>((issue: App.Issue) =>
-  identifierKey(issue.identifier)
-);
 export async function fetchIssue(
   apiBase: string,
   apiToken: string,
-  identifier: App.Identifier,
-  force?: boolean
+  { owner, name, number }: App.Identifier
 ): Promise<App.Issue> {
-  return issueCache.fetch(identifierKey(identifier), !!force, async () => {
-    const { owner, name, number } = identifier;
-    const per = 5;
-    const raw = (
-      await graphql<TQueryResult>(
-        `
+  const per = 5;
+  const raw = (
+    await graphql<TQueryResult>(
+      `
         query {
           repository(owner: "${owner}", name: "${name}") {
             issue(number: ${number}) {
@@ -97,46 +87,39 @@ export async function fetchIssue(
           }
         }
       `,
-        {
-          baseUrl: apiBase,
-          headers: {
-            authorization: `token ${apiToken}`,
-          },
-        }
-      )
-    ).repository.issue;
-    if (!raw) {
-      console.debug(raw);
-      throw Error("request issue failed");
-    }
+      {
+        baseUrl: apiBase,
+        headers: {
+          authorization: `token ${apiToken}`,
+        },
+      }
+    )
+  ).repository.issue;
+  if (!raw) {
+    console.debug(raw);
+    throw Error("request issue failed");
+  }
 
-    return {
-      identifier: { owner, name, number },
-      title: raw.title,
-      status: raw.closed ? "closed" : "open",
-      author: mapAuthorData(raw.author),
-      body: raw.bodyHTML,
-      publishedAt: parseDate(raw.publishedAt),
-      ...mapCommentsData(raw.comments),
-    };
-  });
+  return {
+    identifier: { owner, name, number },
+    title: raw.title,
+    status: raw.closed ? "closed" : "open",
+    author: mapAuthorData(raw.author),
+    body: raw.bodyHTML,
+    publishedAt: parseDate(raw.publishedAt),
+    ...mapCommentsData(raw.comments),
+  };
 }
 
-const prCache = new Cache<App.PullRequest>((pr: App.PullRequest) =>
-  identifierKey(pr.identifier)
-);
 export async function fetchPullRequest(
   apiBase: string,
   apiToken: string,
-  identifier: App.Identifier,
-  force?: boolean
+  { owner, name, number }: App.Identifier
 ): Promise<App.PullRequest> {
-  return prCache.fetch(identifierKey(identifier), !!force, async () => {
-    const { owner, name, number } = identifier;
-    const per = 5;
-    const raw = (
-      await graphql<TQueryResult>(
-        `
+  const per = 5;
+  const raw = (
+    await graphql<TQueryResult>(
+      `
         query {
           repository(owner: "${owner}", name: "${name}") {
             pullRequest(number: ${number}) {
@@ -155,34 +138,33 @@ export async function fetchPullRequest(
           }
         }
       `,
-        {
-          baseUrl: apiBase,
-          headers: {
-            authorization: `token ${apiToken}`,
-          },
-        }
-      )
-    ).repository.pullRequest;
-    if (!raw) {
-      console.debug(raw);
-      throw Error("request pullrequest failed");
-    }
+      {
+        baseUrl: apiBase,
+        headers: {
+          authorization: `token ${apiToken}`,
+        },
+      }
+    )
+  ).repository.pullRequest;
+  if (!raw) {
+    console.debug(raw);
+    throw Error("request pullrequest failed");
+  }
 
-    return {
-      identifier: { owner, name, number },
-      title: raw.title,
-      baseRefName: raw.baseRefName,
-      headRefName: raw.headRefName,
-      status: (() => {
-        if (raw.merged) return "merged";
-        if (raw.isDraft) return "draft";
-        if (raw.closed) return "closed";
-        return "open";
-      })(),
-      author: mapAuthorData(raw.author),
-      body: raw.bodyHTML,
-      publishedAt: parseDate(raw.publishedAt),
-      ...mapCommentsData(raw.comments),
-    };
-  });
+  return {
+    identifier: { owner, name, number },
+    title: raw.title,
+    baseRefName: raw.baseRefName,
+    headRefName: raw.headRefName,
+    status: (() => {
+      if (raw.merged) return "merged";
+      if (raw.isDraft) return "draft";
+      if (raw.closed) return "closed";
+      return "open";
+    })(),
+    author: mapAuthorData(raw.author),
+    body: raw.bodyHTML,
+    publishedAt: parseDate(raw.publishedAt),
+    ...mapCommentsData(raw.comments),
+  };
 }

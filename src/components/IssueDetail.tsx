@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { fetchIssue } from "../services/issue";
+import CreateGithubClient from "../services/github";
 
 import MarkdownContent from "../components/MarkdownContent";
+
+const GithubClient = CreateGithubClient();
 
 type PropType = {
   notification: App.Notification;
@@ -11,14 +13,9 @@ export default function IssueDetail(props: PropType) {
   const [issue, setIssue] = useState<App.Issue | null>(null);
 
   useEffect(() => {
-    const { apiBase, apiToken } = JSON.parse(
-      localStorage.getItem("hubook-settings") || "{}"
-    );
-    fetchIssue(
-      apiBase,
-      apiToken,
+    GithubClient.fetchIssue(
       props.notification.subjectIdentifier
-    ).then((issue) => setIssue(issue));
+    )?.then((issue) => setIssue(issue));
   }, [props.notification.id]);
 
   if (issue) {
