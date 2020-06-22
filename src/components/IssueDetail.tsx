@@ -19,7 +19,7 @@ export default function IssueDetail(props: PropType) {
       apiToken,
       props.notification.subjectIdentifier
     ).then((issue) => setIssue(issue));
-  }, []);
+  }, [props.notification.id]);
 
   if (issue) {
     return (

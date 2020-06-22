@@ -31,7 +31,7 @@ export default function MarkdownContent(props: PropType) {
 
     doc.body.innerHTML = props.content;
     setHeight(doc.body.offsetHeight);
-  }, []);
+  }, [props.content]);
 
   const style = {
     border: "none",
