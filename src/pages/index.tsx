@@ -33,11 +33,11 @@ export default function Index() {
 
   // MEMO: Draggable & inner-scrollable split pane is too hard to me ...
   const listHeight = "40%";
+  const separaterHeight = "24px";
 
   return (
     <div className={css.root}>
       <div className={css.notifications} style={{ height: listHeight }}>
-        <h1 className={css.title}>notifications</h1>
         <ol className={css.list}>
           {notifications.map((item, i) => (
             <NotificationListItem
@@ -49,12 +49,15 @@ export default function Index() {
           ))}
         </ol>
       </div>
-      <div
-        className={css.content}
-        style={{ height: `calc(100% - ${listHeight})` }}
-      >
-        {detailDom(notifications[selected] || null)}
-      </div>
+      <div style={{ height: separaterHeight }}></div>
+      {notifications[selected] && (
+        <div
+          className={css.content}
+          style={{ height: `calc(100% - ${listHeight} - ${separaterHeight})` }}
+        >
+          {detailDom(notifications[selected])}
+        </div>
+      )}
     </div>
   );
 }

@@ -21,7 +21,6 @@ export default function IssueDetail(props: PropType) {
   if (issue) {
     return (
       <article>
-        <header>{issue.title}</header>
         <MarkdownContent content={issue.body}></MarkdownContent>
       </article>
     );
