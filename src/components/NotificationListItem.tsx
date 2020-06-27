@@ -54,7 +54,9 @@ export default function NotificationListItem(props: PropType) {
       <div className={css.head}>
         {iconPath && <Icon path={iconPath} size="24px" color={iconColor} />}
       </div>
-      <div className={css.title}>{n.title}</div>
+      <div className={css.title} title={n.title}>
+        {n.title}
+      </div>
       <div className={css.subtitle}>{subtitle(n.subjectIdentifier)}</div>
     </li>
   );
