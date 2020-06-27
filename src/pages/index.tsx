@@ -32,7 +32,7 @@ export default function Index() {
   };
 
   // MEMO: Draggable & inner-scrollable split pane is too hard to me ...
-  const listHeight = "25%";
+  const listHeight = "40%";
 
   return (
     <div className={css.root}>
@@ -43,6 +43,7 @@ export default function Index() {
             <NotificationListItem
               notification={item}
               key={item.id}
+              isSelected={i == selected}
               onClick={select(i)}
             />
           ))}

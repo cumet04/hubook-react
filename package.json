@@ -19,6 +19,8 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
+    "@mdi/js": "^5.3.45",
+    "@mdi/react": "^1.4.0",
     "@octokit/graphql": "^4.5.1",
     "@octokit/rest": "^18.0.0",
     "@snowpack/app-scripts-react": "^1.2.0",
