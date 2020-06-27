@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import css from "./index.module.css";
 import UseGithubClient from "../services/github";
 
@@ -32,12 +32,30 @@ export default function Index() {
   };
 
   // MEMO: Draggable & inner-scrollable split pane is too hard to me ...
-  const listHeight = "40%";
-  const separaterHeight = "24px";
+  const listSize = "40%";
+  const separaterSize = "24px";
+  const detailSize = `calc(100% - ${listSize} - ${separaterSize})`;
+  let rStyle, nStyle, sStyle, dStyle; // root, notifications, separater, detail
+  if (true) {
+    // TODO: setting UI
+    rStyle = { width: "1000px", flexDirection: "column" } as CSSProperties; // hack for type error
+    nStyle = { height: listSize };
+    sStyle = { height: separaterSize };
+    dStyle = { height: detailSize };
+  } else {
+    rStyle = {
+      width: "100vw",
+      padding: "0 24px",
+      flexDirection: "row",
+    } as CSSProperties;
+    nStyle = { width: listSize };
+    sStyle = { width: separaterSize };
+    dStyle = { width: detailSize };
+  }
 
   return (
-    <div className={css.root}>
-      <div className={css.notifications} style={{ height: listHeight }}>
+    <div className={css.root} style={rStyle}>
+      <div className={css.notifications} style={nStyle}>
         <ol className={css.list}>
           {notifications.map((item, i) => (
             <NotificationListItem
@@ -49,12 +67,9 @@ export default function Index() {
           ))}
         </ol>
       </div>
-      <div style={{ height: separaterHeight }}></div>
+      <div style={sStyle}></div>
       {notifications[selected] && (
-        <div
-          className={css.content}
-          style={{ height: `calc(100% - ${listHeight} - ${separaterHeight})` }}
-        >
+        <div className={css.content} style={dStyle}>
           {detailDom(notifications[selected])}
         </div>
       )}
