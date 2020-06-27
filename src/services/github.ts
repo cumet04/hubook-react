@@ -23,7 +23,7 @@ class Cache<T> {
 const identifierKey = (src: App.Identifier) =>
   `${src.owner}/${src.name}/${src.number}`;
 
-export default function createGithubClient() {
+function createClient() {
   const { apiBase, apiToken } = JSON.parse(
     localStorage.getItem("hubook-settings") || "{}"
   );
@@ -53,4 +53,13 @@ export default function createGithubClient() {
       );
     },
   };
+}
+
+let client: ReturnType<typeof createClient>;
+
+export default function UseGithubClient() {
+  if (!client) {
+    client = createClient();
+  }
+  return client;
 }

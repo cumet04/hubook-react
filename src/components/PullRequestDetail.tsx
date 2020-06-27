@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import CreateGithubClient from "../services/github";
+import UseGithubClient from "../services/github";
 
 import MarkdownContent from "../components/MarkdownContent";
 
-const GithubClient = CreateGithubClient();
+const GithubClient = UseGithubClient();
 
 type PropType = {
   notification: App.Notification;

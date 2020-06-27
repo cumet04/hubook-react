@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import css from "./index.module.css";
-import CreateGithubClient from "../services/github";
+import UseGithubClient from "../services/github";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
@@ -15,7 +15,7 @@ function detailDom(notification: App.Notification | null) {
   return null;
 }
 
-const GithubClient = CreateGithubClient();
+const GithubClient = UseGithubClient();
 
 export default function Index() {
   const [notifications, setNotifications] = useState<App.Notification[]>([]);
