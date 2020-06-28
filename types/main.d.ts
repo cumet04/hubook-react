@@ -11,12 +11,14 @@ declare namespace App {
   };
 
   type Comment = {
+    id: string;
     author: Author;
     body: string;
     publishedAt: Date;
   };
 
   type Issue = {
+    id: string;
     identifier: Identifier;
     title: string;
     status: "open" | "closed";
@@ -28,6 +30,7 @@ declare namespace App {
   };
 
   type PullRequest = {
+    id: string;
     identifier: Identifier;
     title: string;
     baseRefName: string;

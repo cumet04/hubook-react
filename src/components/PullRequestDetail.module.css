@@ -1,0 +1,18 @@
+.info {
+  color: gray;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+
+  & .author {
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+
+  & .code {
+    font-family: monospace;
+    color: royalblue;
+    background-color: aliceblue;
+    padding: 2px;
+    border-radius: 2px;
+  }
+}

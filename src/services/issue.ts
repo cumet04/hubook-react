@@ -20,6 +20,7 @@ author {
 const commentsQuery = (per: number) => `
 comments(first: ${per}) {
   nodes {
+    id
     ${authorQuery()}
     bodyHTML
     publishedAt
@@ -55,6 +56,7 @@ function mapCommentsData(comments: IssueCommentConnection) {
     comments: raws.map(
       (raw) =>
         ({
+          id: raw.id,
           author: mapAuthorData(raw.author),
           body: raw.bodyHTML as string,
           publishedAt: parseDate(raw.publishedAt),
@@ -76,6 +78,7 @@ export async function fetchIssue(
         query {
           repository(owner: "${owner}", name: "${name}") {
             issue(number: ${number}) {
+              id
               number
               title
               closed
@@ -101,6 +104,7 @@ export async function fetchIssue(
   }
 
   return {
+    id: raw.id,
     identifier: { owner, name, number },
     title: raw.title,
     status: raw.closed ? "closed" : "open",
@@ -123,6 +127,7 @@ export async function fetchPullRequest(
         query {
           repository(owner: "${owner}", name: "${name}") {
             pullRequest(number: ${number}) {
+              id
               number
               title
               baseRefName
@@ -152,6 +157,7 @@ export async function fetchPullRequest(
   }
 
   return {
+    id: raw.id,
     identifier: { owner, name, number },
     title: raw.title,
     baseRefName: raw.baseRefName,
