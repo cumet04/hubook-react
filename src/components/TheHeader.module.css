@@ -1,0 +1,26 @@
+:root {
+  --header-height: 50px; /* This value also is defined in App.module.css */
+}
+
+.root {
+  display: flex;
+  height: var(--header-height);
+  padding: 0 24px;
+  border-bottom: solid 1px lightgray;
+  align-items: center;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.title {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.setting {
+  width: 24px;
+  height: 24px;
+}

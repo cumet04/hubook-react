@@ -2,14 +2,6 @@
   --header-height: 50px;
 }
 
-.header {
-  display: flex;
-  height: var(--header-height);
-  padding: 0 24px;
-  border-bottom: solid 1px lightgray;
-  align-items: center;
-}
-
 .main {
   flex-grow: 1;
   width: fit-content;

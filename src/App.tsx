@@ -1,20 +1,30 @@
 import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import css from "./App.module.css";
 
 import Index from "./pages/index";
+import Setting from "./pages/setting";
+import TheHeader from "./components/TheHeader";
 
 interface AppProps {}
 
 function App({}: AppProps) {
   return (
-    <div>
-      <header className={css.header}>
-        <span>hubook</span>
-      </header>
-      <main className={css.main}>
-        <Index />
-      </main>
-    </div>
+    <BrowserRouter>
+      <div>
+        <TheHeader></TheHeader>
+        <main className={css.main}>
+          <Switch>
+            <Route exact path="/">
+              <Index />
+            </Route>
+            <Route path="/setting">
+              <Setting />
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 }
 
