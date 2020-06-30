@@ -12,7 +12,7 @@ export default function TheHeader() {
       </Link>
       <div className={css.spacer}></div>
       <Link to="/setting" className={css.setting}>
-        <Icon path={mdiCog} size="100%" color="dimgray" />
+        <Icon path={mdiCog} color="dimgray" />
       </Link>
     </header>
   );
