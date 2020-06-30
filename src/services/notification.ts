@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import type { ActivityListNotificationsForAuthenticatedUserResponseData } from "@octokit/types";
 
 function octokit(base: string, token: string) {
   const res = new Octokit({
@@ -10,6 +11,38 @@ function octokit(base: string, token: string) {
 
 function parseDate(datestr: string) {
   return new Date(Date.parse(datestr));
+}
+
+// extract type of octokit().activity.listNotificationsForAuthenticatedUser().data
+const _notificationTypeDataFunc = () =>
+  ([] as ActivityListNotificationsForAuthenticatedUserResponseData)[0];
+type NotificationData = ReturnType<typeof _notificationTypeDataFunc>;
+
+function parseNotification(raw: NotificationData): App.Notification {
+  // MEMO: I have no idea what notification type can have as value,
+  // and these case are only what I have been seen.
+  let number: number | null = null;
+  switch (raw.subject.type) {
+    case "Issue":
+    case "PullRequest":
+      number = parseInt(raw.subject.url.split("/").pop() || ""); // TODO: fix hack
+    case "RepositoryInvitation":
+      break;
+    default:
+      throw Error("notification subject type is unexpected");
+  }
+
+  return {
+    id: raw.id,
+    updatedAt: parseDate(raw.updated_at),
+    title: raw.subject.title,
+    type: raw.subject.type,
+    subjectIdentifier: {
+      owner: raw.repository.owner.login, // TODO: org?
+      name: raw.repository.name,
+      number: number,
+    },
+  };
 }
 
 export async function fetchNotifications(
@@ -35,27 +68,6 @@ export async function fetchNotifications(
 
   return {
     interval: pollInterval,
-    notifications: res.data.map((raw) => {
-      // MEMO: This application supposes that subject type is issue or pull-req.
-      // I don't know the type can be except these...
-      const type = raw.subject.type;
-      if (type != "Issue" && type != "PullRequest") {
-        console.debug(res);
-        throw Error("subject type is not issue nor pull-req");
-      }
-
-      return {
-        id: raw.id,
-        updatedAt: parseDate(raw.updated_at),
-        lastReadAt: parseDate(raw.last_read_at),
-        title: raw.subject.title,
-        type: raw.subject.type,
-        subjectIdentifier: {
-          owner: raw.repository.owner.login, // TODO: org?
-          name: raw.repository.name,
-          number: parseInt(raw.subject.url.split("/").pop() || ""), // TODO: fix hack
-        },
-      } as App.Notification;
-    }),
+    notifications: res.data.map((raw) => parseNotification(raw)),
   };
 }

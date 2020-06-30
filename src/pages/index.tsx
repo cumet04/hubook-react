@@ -5,15 +5,7 @@ import UseGithubClient from "../services/github";
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
 import PullRequestDetail from "../components/PullRequestDetail";
-
-function detailDom(notification: App.Notification | null) {
-  if (notification?.type == "Issue") {
-    return <IssueDetail notification={notification} />;
-  } else if (notification?.type == "PullRequest") {
-    return <PullRequestDetail notification={notification} />;
-  }
-  return null;
-}
+import RepositoryInvitationDetail from "../components/RepositoryInvitationDetail";
 
 const GithubClient = UseGithubClient();
 
@@ -53,6 +45,12 @@ export default function Index() {
     dStyle = { width: detailSize };
   }
 
+  const DetailComponent = {
+    Issue: IssueDetail,
+    PullRequest: PullRequestDetail,
+    RepositoryInvitation: RepositoryInvitationDetail,
+  }[notifications[selected]?.type];
+
   return (
     <div className={css.root} style={rStyle}>
       <div className={css.notifications} style={nStyle}>
@@ -70,7 +68,7 @@ export default function Index() {
       <div style={sStyle}></div>
       {notifications[selected] && (
         <div className={css.content} style={dStyle}>
-          {detailDom(notifications[selected])}
+          <DetailComponent notification={notifications[selected]} />
         </div>
       )}
     </div>

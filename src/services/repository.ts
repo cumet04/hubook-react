@@ -32,6 +32,16 @@ comments(first: ${per}) {
 }
 `;
 
+async function query(base: string, token: string, q: string) {
+  const result = await graphql<TQueryResult>(q, {
+    baseUrl: base,
+    headers: {
+      authorization: `token ${token}`,
+    },
+  });
+  return result.repository;
+}
+
 function parseDate(datestr: string) {
   return new Date(Date.parse(datestr));
 }
@@ -66,44 +76,70 @@ function mapCommentsData(comments: IssueCommentConnection) {
   };
 }
 
+export async function fetchRepository(
+  apiBase: string,
+  apiToken: string,
+  { owner, name }: App.Identifier
+): Promise<App.Repository> {
+  const q = `
+    query {
+      repository(owner: "${owner}", name: "${name}") {
+        id
+        name
+        owner {
+          avatarUrl
+          login
+        }
+        url
+      }
+    }
+  `;
+  const raw = await query(apiBase, apiToken, q);
+  if (!raw) {
+    console.debug(raw);
+    throw Error("request repository failed");
+  }
+
+  return {
+    type: "Repository",
+    id: raw.id,
+    identifier: { owner, name, number: null },
+    name: raw.name,
+    owner: mapAuthorData(raw.owner),
+    url: raw.url,
+  };
+}
+
 export async function fetchIssue(
   apiBase: string,
   apiToken: string,
   { owner, name, number }: App.Identifier
 ): Promise<App.Issue> {
   const per = 5;
-  const raw = (
-    await graphql<TQueryResult>(
-      `
-        query {
-          repository(owner: "${owner}", name: "${name}") {
-            issue(number: ${number}) {
-              id
-              number
-              title
-              closed
-              publishedAt
-              ${authorQuery()}
-              bodyHTML
-              ${commentsQuery(per)}
-            }
-          }
+  const q = `
+    query {
+      repository(owner: "${owner}", name: "${name}") {
+        issue(number: ${number}) {
+          id
+          number
+          title
+          closed
+          publishedAt
+          ${authorQuery()}
+          bodyHTML
+          ${commentsQuery(per)}
         }
-      `,
-      {
-        baseUrl: apiBase,
-        headers: {
-          authorization: `token ${apiToken}`,
-        },
       }
-    )
-  ).repository.issue;
+    }
+  `;
+  const raw = (await query(apiBase, apiToken, q)).issue;
   if (!raw) {
     console.debug(raw);
     throw Error("request issue failed");
   }
 
   return {
+    type: "Issue",
     id: raw.id,
     identifier: { owner, name, number },
     title: raw.title,
@@ -121,42 +157,34 @@ export async function fetchPullRequest(
   { owner, name, number }: App.Identifier
 ): Promise<App.PullRequest> {
   const per = 5;
-  const raw = (
-    await graphql<TQueryResult>(
-      `
-        query {
-          repository(owner: "${owner}", name: "${name}") {
-            pullRequest(number: ${number}) {
-              id
-              number
-              title
-              baseRefName
-              headRefName
-              merged
-              closed
-              isDraft
-              publishedAt
-              ${authorQuery()}
-              bodyHTML
-              ${commentsQuery(per)}
-            }
-          }
+  const q = `
+    query {
+      repository(owner: "${owner}", name: "${name}") {
+        pullRequest(number: ${number}) {
+          id
+          number
+          title
+          baseRefName
+          headRefName
+          merged
+          closed
+          isDraft
+          publishedAt
+          ${authorQuery()}
+          bodyHTML
+          ${commentsQuery(per)}
         }
-      `,
-      {
-        baseUrl: apiBase,
-        headers: {
-          authorization: `token ${apiToken}`,
-        },
       }
-    )
-  ).repository.pullRequest;
+    }
+  `;
+  const raw = (await query(apiBase, apiToken, q)).pullRequest;
   if (!raw) {
     console.debug(raw);
     throw Error("request pullrequest failed");
   }
 
   return {
+    type: "PullRequest",
     id: raw.id,
     identifier: { owner, name, number },
     title: raw.title,

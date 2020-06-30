@@ -1,4 +1,4 @@
-import { fetchIssue, fetchPullRequest } from "./issue";
+import { fetchRepository, fetchIssue, fetchPullRequest } from "./repository";
 import { fetchNotifications } from "./notification";
 
 class Cache<T> {
@@ -28,6 +28,9 @@ function createClient() {
     localStorage.getItem("hubook-settings") || "{}"
   );
 
+  const issueRepository = new Cache<App.Repository>((repo: App.Repository) =>
+    identifierKey(repo.identifier)
+  );
   const issueCache = new Cache<App.Issue>((issue: App.Issue) =>
     identifierKey(issue.identifier)
   );
@@ -39,6 +42,14 @@ function createClient() {
     fetchNotifications(since?: Date) {
       if (!apiBase || !apiToken) return null;
       return fetchNotifications(apiBase, apiToken, since);
+    },
+    fetchRepository(identifier: App.Identifier, force?: boolean) {
+      if (!apiBase || !apiToken) return null;
+      return issueRepository.fetch(
+        identifierKey(identifier),
+        !!force,
+        async () => fetchRepository(apiBase, apiToken, identifier)
+      );
     },
     fetchIssue(identifier: App.Identifier, force?: boolean) {
       if (!apiBase || !apiToken) return null;

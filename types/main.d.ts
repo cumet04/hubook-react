@@ -2,7 +2,7 @@ declare namespace App {
   type Identifier = {
     owner: string;
     name: string;
-    number: number;
+    number: number | null;
   };
 
   type Author = {
@@ -17,7 +17,17 @@ declare namespace App {
     publishedAt: Date;
   };
 
+  type Repository = {
+    type: "Repository";
+    id: string;
+    identifier: Identifier;
+    name: string;
+    owner: Author;
+    url: string;
+  };
+
   type Issue = {
+    type: "Issue";
     id: string;
     identifier: Identifier;
     title: string;
@@ -30,6 +40,7 @@ declare namespace App {
   };
 
   type PullRequest = {
+    type: "PullRequest";
     id: string;
     identifier: Identifier;
     title: string;
@@ -46,9 +57,8 @@ declare namespace App {
   type Notification = {
     id: string;
     updatedAt: Date;
-    lastReadAt: Date;
     title: string;
-    type: string;
+    type: "Issue" | "PullRequest" | "RepositoryInvitation";
     subjectIdentifier: Identifier;
   };
 }

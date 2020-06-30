@@ -5,6 +5,8 @@
 
   padding: 12px;
   border-top: solid 1px lightgray;
+
+  cursor: pointer;
 }
 
 .current {
