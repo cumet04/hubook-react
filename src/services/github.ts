@@ -23,10 +23,11 @@ class Cache<T> {
 const identifierKey = (src: App.Identifier) =>
   `${src.owner}/${src.name}/${src.number}`;
 
-function createClient() {
+export function CreateGithubClient() {
   const { apiBase, apiToken } = JSON.parse(
     localStorage.getItem("hubook-settings") || "{}"
   );
+  if (!apiBase || !apiToken) return null;
 
   const issueRepository = new Cache<App.Repository>((repo: App.Repository) =>
     identifierKey(repo.identifier)
@@ -40,11 +41,9 @@ function createClient() {
 
   return {
     fetchNotifications(since?: Date) {
-      if (!apiBase || !apiToken) return null;
       return fetchNotifications(apiBase, apiToken, since);
     },
     fetchRepository(identifier: App.Identifier, force?: boolean) {
-      if (!apiBase || !apiToken) return null;
       return issueRepository.fetch(
         identifierKey(identifier),
         !!force,
@@ -52,13 +51,11 @@ function createClient() {
       );
     },
     fetchIssue(identifier: App.Identifier, force?: boolean) {
-      if (!apiBase || !apiToken) return null;
       return issueCache.fetch(identifierKey(identifier), !!force, async () =>
         fetchIssue(apiBase, apiToken, identifier)
       );
     },
     fetchPullRequest(identifier: App.Identifier, force?: boolean) {
-      if (!apiBase || !apiToken) return null;
       return issuePullReq.fetch(identifierKey(identifier), !!force, async () =>
         fetchPullRequest(apiBase, apiToken, identifier)
       );
@@ -66,11 +63,4 @@ function createClient() {
   };
 }
 
-let client: ReturnType<typeof createClient>;
-
-export default function UseGithubClient() {
-  if (!client) {
-    client = createClient();
-  }
-  return client;
-}
+export type GithubClient = ReturnType<typeof CreateGithubClient>;

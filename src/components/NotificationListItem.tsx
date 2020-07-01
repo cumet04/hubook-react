@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import css from "./NotificationListItem.module.css";
-import UseGithubClient from "../services/github";
+import { GithubClientContext } from "../contexts";
 import Icon from "@mdi/react";
 import {
   mdiAlertCircleOutline,
@@ -8,8 +8,6 @@ import {
   mdiSourceMerge,
   mdiEmailOutline,
 } from "@mdi/js";
-
-const GithubClient = UseGithubClient();
 
 type PropType = {
   notification: App.Notification;
@@ -31,19 +29,19 @@ export default function NotificationListItem(props: PropType) {
     App.Repository | App.Issue | App.PullRequest
   >();
 
+  const ghClient = useContext(GithubClientContext).value;
   useEffect(() => {
     const id = props.notification.subjectIdentifier;
+    if (!ghClient) return;
     switch (n.type) {
       case "Issue":
-        GithubClient.fetchIssue(id)?.then((issue) => setSubject(issue));
+        ghClient.fetchIssue(id)?.then((issue) => setSubject(issue));
         break;
       case "PullRequest":
-        GithubClient.fetchPullRequest(id)?.then((pullreq) =>
-          setSubject(pullreq)
-        );
+        ghClient.fetchPullRequest(id)?.then((pullreq) => setSubject(pullreq));
         break;
       case "RepositoryInvitation":
-        GithubClient.fetchRepository(id)?.then((repo) => setSubject(repo));
+        ghClient.fetchRepository(id)?.then((repo) => setSubject(repo));
         break;
     }
   }, [props.notification.id]);

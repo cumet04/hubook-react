@@ -1,23 +1,22 @@
-import React, { useState, useEffect, CSSProperties } from "react";
+import React, { useState, useEffect, CSSProperties, useContext } from "react";
 import css from "./index.module.css";
-import UseGithubClient from "../services/github";
+import { GithubClientContext } from "../contexts";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
 import PullRequestDetail from "../components/PullRequestDetail";
 import RepositoryInvitationDetail from "../components/RepositoryInvitationDetail";
 
-const GithubClient = UseGithubClient();
-
 export default function Index() {
   const [notifications, setNotifications] = useState<App.Notification[]>([]);
   const [selected, setSelected] = useState<number>(-1);
 
+  const ghClient = useContext(GithubClientContext).value;
   useEffect(() => {
-    GithubClient.fetchNotifications()?.then((resp) => {
+    ghClient?.fetchNotifications()?.then((resp) => {
       setNotifications(resp.notifications);
     });
-  }, []);
+  }, [ghClient]);
 
   const select = (n: number) => {
     return () => setSelected(n);

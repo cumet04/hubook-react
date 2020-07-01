@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import css from "./RepositoryInvitationDetail.module.css";
-import UseGithubClient from "../services/github";
-
-const GithubClient = UseGithubClient();
+import { GithubClientContext } from "../contexts";
 
 type PropType = {
   notification: App.Notification;
@@ -11,10 +9,11 @@ type PropType = {
 export default function IssueDetail(props: PropType) {
   const [repo, setRepo] = useState<App.Repository | null>(null);
 
+  const ghClient = useContext(GithubClientContext).value;
   useEffect(() => {
-    GithubClient.fetchRepository(
-      props.notification.subjectIdentifier
-    )?.then((repo) => setRepo(repo));
+    ghClient
+      ?.fetchRepository(props.notification.subjectIdentifier)
+      ?.then((repo) => setRepo(repo));
   }, [props.notification.id]);
 
   if (repo) {

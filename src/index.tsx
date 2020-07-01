@@ -1,12 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { GithubClientProvider } from "./contexts";
 import App from "./App";
 import "ress";
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GithubClientProvider>
+      <App />
+    </GithubClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

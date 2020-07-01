@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import css from "./IssueDetail.module.css";
-import UseGithubClient from "../services/github";
+import { GithubClientContext } from "../contexts";
 
 import IssueComment from "../components/IssueComment";
-
-const GithubClient = UseGithubClient();
 
 type PropType = {
   notification: App.Notification;
@@ -13,10 +11,11 @@ type PropType = {
 export default function IssueDetail(props: PropType) {
   const [issue, setIssue] = useState<App.Issue | null>(null);
 
+  const ghClient = useContext(GithubClientContext).value;
   useEffect(() => {
-    GithubClient.fetchIssue(
-      props.notification.subjectIdentifier
-    )?.then((issue) => setIssue(issue));
+    ghClient
+      ?.fetchIssue(props.notification.subjectIdentifier)
+      ?.then((issue) => setIssue(issue));
   }, [props.notification.id]);
 
   const statusText = "opened this issue";
