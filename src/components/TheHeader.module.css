@@ -20,7 +20,7 @@
   }
 }
 
-.setting {
+.preferences {
   position: relative;
   --size: 36px;
   width: var(--size);

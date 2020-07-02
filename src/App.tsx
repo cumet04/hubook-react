@@ -1,16 +1,33 @@
 import React, { useEffect, useContext } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, useLocation } from "react-router-dom";
 import { GithubClientContext } from "./contexts";
 import { CreateGithubClient } from "./services/github";
 import css from "./App.module.css";
 
 import Index from "./pages/index";
-import Setting from "./pages/setting";
+import Preferences from "./pages/preferences";
 import TheHeader from "./components/TheHeader";
 
-interface AppProps {}
+const routes = [
+  {
+    path: "/",
+    component: Index,
+    title: "Notifications",
+  },
+  {
+    path: "/preferences",
+    component: Preferences,
+    title: "Preferences",
+  },
+];
 
-function App({}: AppProps) {
+function PageHeader() {
+  // extract as a component from App for useLocation
+  const title = routes.find((r) => r.path == useLocation().pathname)?.title;
+  return <div className={css.title}>{title}</div>;
+}
+
+export default function App() {
   const ghcContext = useContext(GithubClientContext);
   useEffect(() => ghcContext.set(CreateGithubClient()), []);
 
@@ -19,18 +36,16 @@ function App({}: AppProps) {
       <div>
         <TheHeader></TheHeader>
         <main className={css.main}>
+          <PageHeader />
           <Switch>
-            <Route exact path="/">
-              <Index />
-            </Route>
-            <Route path="/setting">
-              <Setting />
-            </Route>
+            {routes.map((r) => (
+              <Route exact path={r.path} key={r.path}>
+                <r.component />
+              </Route>
+            ))}
           </Switch>
         </main>
       </div>
     </BrowserRouter>
   );
 }
-
-export default App;

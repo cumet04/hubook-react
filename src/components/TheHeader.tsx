@@ -11,7 +11,7 @@ export default function TheHeader() {
         hubook
       </Link>
       <div className={css.spacer}></div>
-      <Link to="/setting" className={css.setting}>
+      <Link to="/preferences" className={css.preferences}>
         <Icon path={mdiCog} color="dimgray" />
       </Link>
     </header>
