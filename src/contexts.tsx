@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import type { GithubClient } from "./services/github";
+import { GithubClient, CreateGithubClient } from "./services/github";
+import * as Config from "./services/config";
 
 type contextType<T> = {
   value: T;
@@ -22,6 +23,22 @@ function createStore<T>(initial: T) {
   };
 }
 
-const ghcStore = createStore<GithubClient | null>(null);
-export const GithubClientProvider = ghcStore.provider;
+const ghcStore = createStore<GithubClient | null>(
+  (() => {
+    const { apiBase, apiToken } = Config.value().github;
+    if (apiBase == "" || apiToken == "") return null;
+    return CreateGithubClient(apiBase, apiToken);
+  })()
+);
 export const GithubClientContext = ghcStore.context;
+
+const layoutStore = createStore<"H" | "V">(Config.value().layout);
+export const LayoutStoreContext = layoutStore.context;
+
+export const ContextProvider = ({ children }: { children: JSX.Element }) => {
+  return (
+    <ghcStore.provider>
+      <layoutStore.provider>{children}</layoutStore.provider>
+    </ghcStore.provider>
+  );
+};

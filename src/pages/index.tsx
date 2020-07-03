@@ -1,6 +1,6 @@
 import React, { useState, useEffect, CSSProperties, useContext } from "react";
 import css from "./index.module.css";
-import { GithubClientContext } from "../contexts";
+import { GithubClientContext, LayoutStoreContext } from "../contexts";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
@@ -23,12 +23,12 @@ export default function Index() {
   };
 
   // MEMO: Draggable & inner-scrollable split pane is too hard to me ...
+  const layoutContext = useContext(LayoutStoreContext);
   const listSize = "40%";
   const separaterSize = "24px";
   const detailSize = `calc(100% - ${listSize} - ${separaterSize})`;
   let rStyle, nStyle, sStyle, dStyle; // root, notifications, separater, detail
-  if (true) {
-    // TODO: setting UI
+  if (layoutContext.value == "H") {
     rStyle = { width: "1000px", flexDirection: "column" } as CSSProperties; // hack for type error
     nStyle = { height: listSize };
     sStyle = { height: separaterSize };

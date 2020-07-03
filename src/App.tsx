@@ -1,7 +1,5 @@
-import React, { useEffect, useContext } from "react";
+import React from "react";
 import { BrowserRouter, Route, Switch, useLocation } from "react-router-dom";
-import { GithubClientContext } from "./contexts";
-import { CreateGithubClient } from "./services/github";
 import css from "./App.module.css";
 
 import Index from "./pages/index";
@@ -28,9 +26,6 @@ function PageHeader() {
 }
 
 export default function App() {
-  const ghcContext = useContext(GithubClientContext);
-  useEffect(() => ghcContext.set(CreateGithubClient()), []);
-
   return (
     <BrowserRouter>
       <div>

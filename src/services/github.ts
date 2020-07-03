@@ -23,12 +23,7 @@ class Cache<T> {
 const identifierKey = (src: App.Identifier) =>
   `${src.owner}/${src.name}/${src.number}`;
 
-export function CreateGithubClient() {
-  const { apiBase, apiToken } = JSON.parse(
-    localStorage.getItem("hubook-settings") || "{}"
-  );
-  if (!apiBase || !apiToken) return null;
-
+export function CreateGithubClient(apiBase: string, apiToken: string) {
   const issueRepository = new Cache<App.Repository>((repo: App.Repository) =>
     identifierKey(repo.identifier)
   );
