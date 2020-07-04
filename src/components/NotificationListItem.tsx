@@ -71,9 +71,19 @@ export default function NotificationListItem(props: PropType) {
     }
   })();
 
-  const selectedClass = props.isSelected ? ` ${css.current}` : "";
+  const [unread, setUnread] = useState(n.unread);
+  const onClick = (e: React.MouseEvent<HTMLLIElement>) => {
+    props.onClick(e);
+    ghClient?.markReadNotification(n).then(() => setUnread(false));
+  };
+
+  const itemClass = [
+    css.item,
+    props.isSelected ? css.current : "",
+    unread ? css.unread : "",
+  ].join(" ");
   return (
-    <li onClick={props.onClick} className={css.item + selectedClass}>
+    <li onClick={onClick} className={itemClass}>
       <div className={css.head}>
         {iconPath && <Icon path={iconPath} size="24px" color={iconColor} />}
       </div>

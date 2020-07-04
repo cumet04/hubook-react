@@ -1,5 +1,5 @@
 import { fetchRepository, fetchIssue, fetchPullRequest } from "./repository";
-import { fetchNotifications } from "./notification";
+import { fetchNotifications, markReadNotification } from "./notification";
 
 class Cache<T> {
   cache: { [key: string]: T } = {};
@@ -37,6 +37,11 @@ export function CreateGithubClient(apiBase: string, apiToken: string) {
   return {
     fetchNotifications(since?: Date) {
       return fetchNotifications(apiBase, apiToken, since);
+    },
+    markReadNotification(n: App.Notification) {
+      return markReadNotification(apiBase, apiToken, n.id).then(
+        () => (n.unread = false)
+      );
     },
     fetchRepository(identifier: App.Identifier, force?: boolean) {
       return issueRepository.fetch(
