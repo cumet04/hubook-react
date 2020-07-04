@@ -21,7 +21,8 @@ const routes = [
 
 function PageHeader() {
   // extract as a component from App for useLocation
-  const title = routes.find((r) => r.path == useLocation().pathname)?.title;
+  const current = useLocation().pathname;
+  const title = routes.find((r) => r.path == current)?.title;
   return <div className={css.title}>{title}</div>;
 }
 
