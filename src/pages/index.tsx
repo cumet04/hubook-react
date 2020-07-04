@@ -35,8 +35,7 @@ export default function Index() {
     dStyle = { height: detailSize };
   } else {
     rStyle = {
-      width: "100vw",
-      padding: "0 24px",
+      width: "calc(100vw - 2 * 24px)",
       flexDirection: "row",
     } as CSSProperties;
     nStyle = { width: listSize };
