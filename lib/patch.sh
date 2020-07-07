@@ -15,4 +15,4 @@ sed -i 's|^import nodeFetch|//import nodeFetch|' $file
 sed -i 's|^\s*const fetch|//const fetch|' $file
 
 # display changed lines
-echo "$before" | diff - $file
+echo "$before" | diff - $file || true
