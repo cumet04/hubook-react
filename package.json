@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "snowpack dev --open none",
-    "build": "snowpack build",
+    "build": "snowpack build && sed -i -e \"s|/__snowpack__/|/hubook-react/__snowpack__/|\" build/_dist_/index.js",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\""
   },
@@ -16,24 +16,24 @@
   },
   "dependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
-  },
-  "devDependencies": {
+    "react-dom": "^16.13.1",
     "@mdi/js": "^5.3.45",
     "@mdi/react": "^1.4.0",
     "@octokit/graphql": "^4.5.1",
     "@octokit/rest": "^18.0.0",
     "@snowpack/app-scripts-react": "^1.2.0",
-    "@types/react": "^16.9.38",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-router-dom": "^5.1.5",
     "postcss-cli": "^7.1.1",
     "postcss-custom-properties": "^9.1.1",
     "postcss-nesting": "^7.0.1",
-    "prettier": "^2.0.5",
     "react-router-dom": "^5.2.0",
     "ress": "^2.0.4",
     "snowpack": "^2.5.2",
     "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.38",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
+    "prettier": "^2.0.5"
   }
 }

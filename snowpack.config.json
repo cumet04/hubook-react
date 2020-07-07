@@ -3,5 +3,8 @@
   "scripts": {
     "build:css": "postcss"
   },
-  "plugins": []
+  "plugins": [],
+  "buildOptions": {
+    "baseUrl": "/hubook-react/"
+  }
 }
