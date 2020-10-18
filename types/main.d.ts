@@ -58,7 +58,7 @@ declare namespace App {
     id: number;
     updatedAt: Date;
     title: string;
-    type: "Issue" | "PullRequest" | "RepositoryInvitation";
+    type: "Issue" | "PullRequest" | "RepositoryInvitation" | "Release";
     subjectIdentifier: Identifier;
     unread: boolean;
   };
