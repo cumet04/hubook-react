@@ -1,7 +1,7 @@
 import React from "react";
-import css from "./IssueComment.module.css";
 
 import MarkdownContent from "../components/MarkdownContent";
+import styled from "styled-components";
 
 type PropType = {
   comment: App.Comment;
@@ -10,19 +10,47 @@ type PropType = {
 export default function IssueComment(props: PropType) {
   const c = props.comment;
   return (
-    <li className={css.item}>
-      <div className={css.icon}>
-        <img
-          className={css.img}
-          src={c.author.avatarUrl}
-          alt={c.author.login}
-        />
-      </div>
-      <div className={css.info}>
-        <span className={css.author}>{c.author.login}</span>
+    <Item>
+      <Icon>
+        <IconImg src={c.author.avatarUrl} alt={c.author.login} />
+      </Icon>
+      <Info>
+        <Author>{c.author.login}</Author>
         <span>commented at {c.publishedAt.toLocaleString()}</span>
-      </div>
+      </Info>
       <MarkdownContent content={c.body}></MarkdownContent>
-    </li>
+    </Item>
   );
 }
+
+const Item = styled.li`
+  position: relative;
+  padding: 12px 16px 20px 56px;
+
+  &:not(:first-of-type) {
+    border-top: solid 1px lightgray;
+  }
+`;
+
+const Icon = styled.div`
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 0;
+`;
+
+const IconImg = styled.img`
+  width: 100%;
+  height: 100%;
+`;
+
+const Info = styled.div`
+  color: gray;
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+`;
+
+const Author = styled.span`
+  font-weight: bold;
+  margin-right: 0.5rem;
+`;

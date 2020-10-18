@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import css from "./PullRequestDetail.module.css";
 import { GithubClientContext } from "../contexts";
 
 import IssueComment from "../components/IssueComment";
+import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
@@ -22,24 +22,43 @@ export default function IssueDetail(props: PropType) {
     pullreq?.status == "merged" ? "merged into" : "wants to merge into";
   const timeText = pullreq?.publishedAt.toLocaleString();
 
-  if (pullreq) {
-    return (
-      <article>
-        <div className={css.info}>
-          <span className={css.author}>{pullreq.author.login}</span>
-          <span> {statusText} </span>
-          <span className={css.code}>{pullreq.baseRefName}</span>
-          <span> from </span>
-          <span className={css.code}>{pullreq.headRefName}</span>
-          <span> {timeText}</span>
-        </div>
-        <ol>
-          <IssueComment comment={pullreq}></IssueComment>
-          {pullreq.comments.map((item) => (
-            <IssueComment comment={item} key={item.id}></IssueComment>
-          ))}
-        </ol>
-      </article>
-    );
-  } else return <article></article>;
+  return pullreq ? (
+    <article>
+      <Info>
+        <Author>{pullreq.author.login}</Author>
+        <span> {statusText} </span>
+        <Code>{pullreq.baseRefName}</Code>
+        <span> from </span>
+        <Code>{pullreq.headRefName}</Code>
+        <span> {timeText}</span>
+      </Info>
+      <ol>
+        <IssueComment comment={pullreq}></IssueComment>
+        {pullreq.comments.map((item) => (
+          <IssueComment comment={item} key={item.id}></IssueComment>
+        ))}
+      </ol>
+    </article>
+  ) : (
+    <article></article>
+  );
 }
+
+const Info = styled.div`
+  color: gray;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+`;
+
+const Author = styled.span`
+  font-weight: bold;
+  margin-right: 0.5rem;
+`;
+
+const Code = styled.span`
+  font-family: monospace;
+  color: royalblue;
+  background-color: aliceblue;
+  padding: 2px;
+  border-radius: 2px;
+`;

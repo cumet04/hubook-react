@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import css from "./NotificationListItem.module.css";
 import { GithubClientContext } from "../contexts";
 import Icon from "@mdi/react";
 import {
@@ -8,6 +7,7 @@ import {
   mdiSourceMerge,
   mdiEmailOutline,
 } from "@mdi/js";
+import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
@@ -77,20 +77,44 @@ export default function NotificationListItem(props: PropType) {
     ghClient?.markReadNotification(n).then(() => setUnread(false));
   };
 
-  const itemClass = [
-    css.item,
-    props.isSelected ? css.current : "",
-    unread ? css.unread : "",
-  ].join(" ");
   return (
-    <li onClick={onClick} className={itemClass}>
-      <div className={css.head}>
+    <Item onClick={onClick} current={props.isSelected}>
+      <Head>
         {iconPath && <Icon path={iconPath} size="24px" color={iconColor} />}
-      </div>
-      <div className={css.title} title={n.title}>
+      </Head>
+      <Title isNew={unread} title={n.title}>
         {n.title}
-      </div>
-      <div className={css.subtitle}>{subtitle(n.subjectIdentifier)}</div>
-    </li>
+      </Title>
+      <SubTitle>{subtitle(n.subjectIdentifier)}</SubTitle>
+    </Item>
   );
 }
+
+const Item = styled.li<{ current: boolean }>`
+  display: grid;
+  grid-template-rows: 20px 20px;
+  grid-template-columns: 40px 1fr;
+  background-color: ${({ current }) => (current ? "lavendar" : "inherit")};
+
+  padding: 12px;
+  border-top: solid 1px lightgray;
+
+  cursor: pointer;
+`;
+
+const Title = styled.div<{ isNew: boolean }>`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: ${({ isNew }) => (isNew ? "bold" : "inherit")};
+`;
+
+const Head = styled.div`
+  grid-row: 1/3;
+  grid-column: 1;
+`;
+
+const SubTitle = styled.div`
+  color: gray;
+  font-size: 1.4rem;
+`;

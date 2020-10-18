@@ -1,6 +1,6 @@
-import React, { useState, useEffect, CSSProperties, useContext } from "react";
-import css from "./index.module.css";
+import React, { useState, useEffect, useContext } from "react";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
+import styled from "styled-components";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
@@ -22,26 +22,7 @@ export default function Index() {
     return () => setSelected(n);
   };
 
-  // MEMO: Draggable & inner-scrollable split pane is too hard to me ...
   const layoutContext = useContext(LayoutStoreContext);
-  const listSize = "40%";
-  const separaterSize = "24px";
-  const detailSize = `calc(100% - ${listSize} - ${separaterSize})`;
-  let rStyle, nStyle, sStyle, dStyle; // root, notifications, separater, detail
-  if (layoutContext.value == "H") {
-    rStyle = { width: "1000px", flexDirection: "column" } as CSSProperties; // hack for type error
-    nStyle = { height: listSize };
-    sStyle = { height: separaterSize };
-    dStyle = { height: detailSize };
-  } else {
-    rStyle = {
-      width: "calc(100vw - 2 * 24px)",
-      flexDirection: "row",
-    } as CSSProperties;
-    nStyle = { width: listSize };
-    sStyle = { width: separaterSize };
-    dStyle = { width: detailSize };
-  }
 
   const DetailComponent = {
     Issue: IssueDetail,
@@ -50,9 +31,9 @@ export default function Index() {
   }[notifications[selected]?.type];
 
   return (
-    <div className={css.root} style={rStyle}>
-      <div className={css.notifications} style={nStyle}>
-        <ol className={css.list}>
+    <Root layout={layoutContext.value}>
+      <Notifications>
+        <List>
           {notifications.map((item, i) => (
             <NotificationListItem
               notification={item}
@@ -61,14 +42,55 @@ export default function Index() {
               onClick={select(i)}
             />
           ))}
-        </ol>
-      </div>
-      <div style={sStyle}></div>
+        </List>
+      </Notifications>
+      <Separater />
       {notifications[selected] && (
-        <div className={css.content} style={dStyle}>
+        <Content>
           <DetailComponent notification={notifications[selected]} />
-        </div>
+        </Content>
       )}
-    </div>
+    </Root>
   );
 }
+
+const Root = styled.div<{ layout: "H" | "V" }>`
+  display: flex;
+  height: 100%;
+
+  width: ${({ layout }) =>
+    layout == "H" ? "1000px" : "calc(100vw - 2 * 24px)"};
+  flex-direction: ${({ layout }) => (layout == "H" ? "column" : "row")};
+`;
+
+const List = styled.ol`
+  height: 100%;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: lightslategray;
+    border-radius: 5px;
+  }
+`;
+
+// MEMO: Draggable & inner-scrollable split pane is too hard to me ...
+const listSize = "40%";
+const separaterSize = "24px";
+const contentSize = `calc(100% - ${listSize} - ${separaterSize})`;
+
+const Notifications = styled.div`
+  height: ${listSize};
+`;
+const Separater = styled.div`
+  height: ${separaterSize};
+`;
+const Content = styled.div`
+  height: ${contentSize};
+  border: solid 1px lightgray;
+  border-radius: 5px;
+  padding: 16px;
+  overflow-y: scroll;
+`;
