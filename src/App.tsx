@@ -28,7 +28,7 @@ function PageHeader() {
 
 export default function App() {
   return (
-    <BrowserRouter basename="hubook-react">
+    <BrowserRouter>
       <div>
         <TheHeader></TheHeader>
         <Main>
