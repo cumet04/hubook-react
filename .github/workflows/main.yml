@@ -16,7 +16,7 @@ jobs:
       - name: Build pages
         run: npm run build
       - name: Deploy
-        uses: netlify/actions/cli@master
+        uses: netlify/actions/build@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NETLIFY_DIR: dist
