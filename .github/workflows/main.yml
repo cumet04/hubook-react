@@ -1,7 +1,9 @@
 name: build pages
 on:
   push:
-    branches: master
+    branches:
+      - master
+      - ghactions/**
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +19,6 @@ jobs:
         run: npm run build
       - name: Deploy
         uses: netlify/actions/build@master
-        with:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NETLIFY_DIR: dist
