@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import css from "./RepositoryInvitationDetail.module.css";
 import { GithubClientContext } from "../contexts";
+import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
@@ -16,20 +16,36 @@ export default function IssueDetail(props: PropType) {
       ?.then((repo) => setRepo(repo));
   }, [props.notification.id]);
 
-  if (repo) {
-    return (
-      <article className={css.root}>
-        <p className={css.text}>
-          {repo.owner.login} invited you to collaborate
-        </p>
-        <a
-          href={`${repo.url}/invitations`}
-          target="_blank"
-          className={css.link}
-        >
-          Go to invitation page
-        </a>
-      </article>
-    );
-  } else return <article></article>;
+  return repo ? (
+    <Root>
+      <Text>{repo.owner.login} invited you to collaborate</Text>
+      <TextLink href={`${repo.url}/invitations`} target="_blank">
+        Go to invitation page
+      </TextLink>
+    </Root>
+  ) : (
+    <article></article>
+  );
 }
+
+const Root = styled.article`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Text = styled.p`
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+`;
+
+const TextLink = styled.a`
+  color: whitesmoke;
+  background-color: mediumseagreen;
+  padding: 4px 12px;
+  border-radius: 4px;
+
+  &:hover {
+    text-decoration: none;
+  }
+`;

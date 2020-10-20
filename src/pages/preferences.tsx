@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import css from "./preferences.module.css";
 import Icon from "@mdi/react";
 import { mdiViewSplitHorizontal, mdiViewSplitVertical } from "@mdi/js";
 import * as Config from "../services/config";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
 import { CreateGithubClient } from "../services/github";
+import styled from "styled-components";
 
 function LayoutRadioItem({
   value,
@@ -18,22 +18,37 @@ function LayoutRadioItem({
   children: (JSX.Element | string)[];
 }) {
   return (
-    <div className={css.radio_item}>
-      <input
+    <RadioItem>
+      <RadioInput
         type="radio"
         name="layout"
         id={`radio_layout_${value}`}
         value={value}
         checked={current == value}
         onChange={() => setter(value)}
-        className={css.radio_input}
-      ></input>
-      <label htmlFor={`radio_layout_${value}`} className={css.radio_label}>
-        {children}
-      </label>
-    </div>
+      ></RadioInput>
+      <RadioLabel htmlFor={`radio_layout_${value}`}>{children}</RadioLabel>
+    </RadioItem>
   );
 }
+
+const RadioItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 8px 4px;
+`;
+const RadioLabel = styled.label`
+  width: 100px; /* adjust clickable area */
+  font-size: 1.4rem;
+
+  & svg {
+    display: block;
+    margin: -8px -4px; /* adjust for icon itself's margin */
+  }
+`;
+const RadioInput = styled.input`
+  margin-right: 12px;
+`;
 
 export default function Setting() {
   const config = Config.value();
@@ -65,12 +80,12 @@ export default function Setting() {
   };
 
   return (
-    <article className={css.root}>
-      <section className={css.section}>
-        <h1 className={css.title}>Appearance</h1>
+    <Root>
+      <Section>
+        <SectionTitle>Appearance</SectionTitle>
 
-        <div className={css.field}>
-          <h2 className={css.label}>Layout</h2>
+        <Field>
+          <Label>Layout</Label>
           <LayoutRadioItem value="H" current={layout} setter={d(setLayout)}>
             Horizontal
             <Icon path={mdiViewSplitHorizontal} size="60px" color="gray" />
@@ -79,44 +94,74 @@ export default function Setting() {
             Vertical
             <Icon path={mdiViewSplitVertical} size="60px" color="gray" />
           </LayoutRadioItem>
-        </div>
-      </section>
+        </Field>
+      </Section>
 
-      <section className={css.section}>
-        <h1 className={css.title}>GitHub API</h1>
+      <Section>
+        <SectionTitle>GitHub API</SectionTitle>
 
-        <div className={css.field}>
-          <h2 className={css.label}>API Endpoint</h2>
-          <input
+        <Field>
+          <Label>API Endpoint</Label>
+          <Input
             type="text"
-            className={css.input}
             value={apiBase}
             onChange={(e) => d(setApiBase)(e.target.value)}
             placeholder="https://api.github.com or https://your.ghe.com/api"
-          ></input>
-        </div>
+          ></Input>
+        </Field>
 
-        <div className={css.field}>
-          <h3 className={css.label}>API Token</h3>
-          <input
+        <Field>
+          <Label>API Token</Label>
+          <Input
             type="text"
-            className={css.input}
             value={apiToken}
             onChange={(e) => d(setApiToken)(e.target.value)}
             placeholder="12345abcde12345abcde12345abcde12345abcde"
-          ></input>
-        </div>
-      </section>
+          ></Input>
+        </Field>
+      </Section>
 
-      <footer className={css.actions}>
-        <button
-          className={`${css.save} ${isDirty ? css.active : ""}`}
-          disabled={!isDirty}
-          onClick={save}
-        >
+      <footer>
+        <ActionSaveButton isActive={isDirty} disabled={!isDirty} onClick={save}>
           Save
-        </button>
+        </ActionSaveButton>
       </footer>
-    </article>
+    </Root>
   );
 }
+
+const Root = styled.article`
+  width: 1000px;
+`;
+
+const Section = styled.section`
+  margin-bottom: 32px;
+`;
+
+const SectionTitle = styled.h1`
+  font-weight: normal;
+  border-bottom: solid 1px lightgray;
+  margin-bottom: 16px;
+`;
+
+const Field = styled.div`
+  margin-bottom: 16px;
+`;
+
+const Label = styled.h2`
+  font-size: 1.4rem;
+`;
+
+const Input = styled.input`
+  border: solid 1px lightgray;
+  padding: 4px 8px;
+  font-size: 1.4rem;
+  width: 400px;
+`;
+
+const ActionSaveButton = styled.button<{ isActive: boolean }>`
+  color: whitesmoke;
+  background-color: ${({ isActive }) => (isActive ? "mediumseagreen" : "gray")};
+  padding: 4px 12px;
+  border-radius: 4px;
+`;

@@ -28,8 +28,12 @@ function parseNotification(raw: NotificationData): App.Notification {
       number = parseInt(raw.subject.url.split("/").pop() || ""); // TODO: fix hack
     case "RepositoryInvitation":
       break;
+    case "Release":
+      break;
     default:
-      throw Error("notification subject type is unexpected");
+      throw Error(
+        `notification subject type is unexpected: ${raw.subject.type}`
+      );
   }
 
   return {
