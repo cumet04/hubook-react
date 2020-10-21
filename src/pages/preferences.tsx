@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
+import styled from "styled-components";
 import Icon from "@mdi/react";
 import { mdiViewSplitHorizontal, mdiViewSplitVertical } from "@mdi/js";
 import * as Config from "../services/config";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
 import { CreateGithubClient } from "../services/github";
-import styled from "styled-components";
-import type { Layout } from "../services/config";
+import GithubIcon from "../assets/ico-github.png";
 
 function LayoutRadioItem({
   value,
@@ -13,9 +13,9 @@ function LayoutRadioItem({
   setter,
   children,
 }: {
-  value: Layout;
-  current: Layout;
-  setter: (v: Layout) => void;
+  value: Config.Layout;
+  current: Config.Layout;
+  setter: (v: Config.Layout) => void;
   children: (JSX.Element | string)[];
 }) {
   return (
@@ -60,7 +60,7 @@ export default function Setting() {
   const ghcContext = useContext(GithubClientContext);
   const layoutContext = useContext(LayoutStoreContext);
 
-  const saveLayout = (value: Layout) => {
+  const saveLayout = (value: Config.Layout) => {
     setLayout(value);
     Config.setLayout(value);
   };
@@ -81,6 +81,8 @@ export default function Setting() {
     ghcContext.set(CreateGithubClient(apiBase, apiToken));
     setIsDirty(false);
   };
+
+  const buildHash = process.env.GITHUB_SHA; // value inserted by esbuild
 
   return (
     <Root>
@@ -133,6 +135,23 @@ export default function Setting() {
           </SaveButton>
         </Field>
       </Section>
+
+      <Section>
+        <SectionTitle>About</SectionTitle>
+
+        <Field>
+          <Label>Build</Label>
+          <Text>{buildHash}</Text>
+        </Field>
+
+        <Field>
+          <Label>Github</Label>
+          <TextLink href="https://github.com/cumet04/hubook-react">
+            <IconImg src={GithubIcon} width="24px" height="24px" />
+            https://github.com/cumet04/hubook-react
+          </TextLink>
+        </Field>
+      </Section>
     </Root>
   );
 }
@@ -157,6 +176,23 @@ const Field = styled.div`
 
 const Label = styled.h2`
   font-size: 1.4rem;
+`;
+
+const Text = styled.p`
+  font-size: 1.4rem;
+`;
+
+const TextLink = styled.a`
+  display: flex;
+  width: max-content;
+  align-items: center;
+  font-size: 1.4rem;
+`;
+
+const IconImg = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
 `;
 
 const Input = styled.input`

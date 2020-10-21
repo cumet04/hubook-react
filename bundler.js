@@ -13,7 +13,13 @@ const buildOpts = {
   bundle: true,
   platform: "browser",
   sourcemap: env == "dev" ? "inline" : false,
-  define: { "process.env.NODE_ENV": `"${env}"` },
+  define: {
+    "process.env.NODE_ENV": `"${env}"`,
+    "process.env.GITHUB_SHA": `"${process.env["GITHUB_SHA"] || "xxxxxxx"}"`,
+  },
+  loader: {
+    ".png": "file",
+  },
 };
 
 // first build
