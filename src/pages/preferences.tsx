@@ -5,6 +5,7 @@ import * as Config from "../services/config";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
 import { CreateGithubClient } from "../services/github";
 import styled from "styled-components";
+import type { Layout } from "../services/config";
 
 function LayoutRadioItem({
   value,
@@ -12,9 +13,9 @@ function LayoutRadioItem({
   setter,
   children,
 }: {
-  value: "H" | "V";
-  current: "H" | "V";
-  setter: React.Dispatch<React.SetStateAction<"H" | "V">>;
+  value: Layout;
+  current: Layout;
+  setter: (v: Layout) => void;
   children: (JSX.Element | string)[];
 }) {
   return (
@@ -59,6 +60,11 @@ export default function Setting() {
   const ghcContext = useContext(GithubClientContext);
   const layoutContext = useContext(LayoutStoreContext);
 
+  const saveLayout = (value: Layout) => {
+    setLayout(value);
+    Config.setLayout(value);
+  };
+
   const [isDirty, setIsDirty] = useState(false);
   function d<T>(f: React.Dispatch<React.SetStateAction<T>>) {
     return ((v: T) => {
@@ -66,13 +72,10 @@ export default function Setting() {
       setIsDirty(true);
     }) as React.Dispatch<React.SetStateAction<T>>;
   }
-  const save = () => {
-    Config.set({
-      github: {
-        apiBase,
-        apiToken,
-      },
-      layout,
+  const saveGithub = () => {
+    Config.setGithub({
+      apiBase,
+      apiToken,
     });
     layoutContext.set(layout);
     ghcContext.set(CreateGithubClient(apiBase, apiToken));
@@ -86,11 +89,11 @@ export default function Setting() {
 
         <Field>
           <Label>Layout</Label>
-          <LayoutRadioItem value="H" current={layout} setter={d(setLayout)}>
+          <LayoutRadioItem value="H" current={layout} setter={saveLayout}>
             Horizontal
             <Icon path={mdiViewSplitHorizontal} size="60px" color="gray" />
           </LayoutRadioItem>
-          <LayoutRadioItem value="V" current={layout} setter={d(setLayout)}>
+          <LayoutRadioItem value="V" current={layout} setter={saveLayout}>
             Vertical
             <Icon path={mdiViewSplitVertical} size="60px" color="gray" />
           </LayoutRadioItem>
@@ -119,13 +122,17 @@ export default function Setting() {
             placeholder="12345abcde12345abcde12345abcde12345abcde"
           ></Input>
         </Field>
-      </Section>
 
-      <footer>
-        <ActionSaveButton isActive={isDirty} disabled={!isDirty} onClick={save}>
-          Save
-        </ActionSaveButton>
-      </footer>
+        <Field>
+          <SaveButton
+            isActive={isDirty}
+            disabled={!isDirty}
+            onClick={saveGithub}
+          >
+            Set
+          </SaveButton>
+        </Field>
+      </Section>
     </Root>
   );
 }
@@ -159,7 +166,7 @@ const Input = styled.input`
   width: 400px;
 `;
 
-const ActionSaveButton = styled.button<{ isActive: boolean }>`
+const SaveButton = styled.button<{ isActive: boolean }>`
   color: whitesmoke;
   background-color: ${({ isActive }) => (isActive ? "mediumseagreen" : "gray")};
   padding: 4px 12px;
