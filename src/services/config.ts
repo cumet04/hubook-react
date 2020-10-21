@@ -1,11 +1,13 @@
 const storageKey = "hubook-configs";
 
-type ConfigType = {
-  github: {
-    apiBase: string;
-    apiToken: string;
-  };
-  layout: "H" | "V";
+export type Layout = "H" | "V";
+export type GithubParams = {
+  apiBase: string;
+  apiToken: string;
+};
+export type ConfigType = {
+  github: GithubParams;
+  layout: Layout;
 };
 
 let config = ((): ConfigType => {
@@ -29,13 +31,25 @@ let config = ((): ConfigType => {
   };
 })();
 
+function save() {
+  localStorage.setItem(storageKey, JSON.stringify(config));
+}
+
 export function value() {
   // simple deep copy
   return JSON.parse(JSON.stringify(config)) as ConfigType;
 }
 
-export function set(v: ConfigType) {
-  config = v;
-  // TODO: validate
-  localStorage.setItem(storageKey, JSON.stringify(config));
+export function setLayout(l: Layout) {
+  Object.assign(config, {
+    layout: l,
+  });
+  save();
+}
+
+export function setGithub(v: GithubParams) {
+  Object.assign(config, {
+    github: v,
+  });
+  save();
 }

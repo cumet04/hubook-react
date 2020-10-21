@@ -14,7 +14,14 @@ const buildOpts = {
   platform: "browser",
   minify: env == "production",
   sourcemap: env == "dev" ? "inline" : false,
-  define: { "process.env.NODE_ENV": `"${env}"` },
+  define: {
+    "process.env.NODE_ENV": `"${env}"`,
+    "process.env.GITHUB_SHA": `"${process.env["GITHUB_SHA"] || "xxxxxxxxxx"}"`,
+    "process.env.BUILD_TIME": `"${Date.now().toString()}"`,
+  },
+  loader: {
+    ".png": "file",
+  },
 };
 
 // first build

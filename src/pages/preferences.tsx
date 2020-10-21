@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react";
+import styled from "styled-components";
 import Icon from "@mdi/react";
 import { mdiViewSplitHorizontal, mdiViewSplitVertical } from "@mdi/js";
 import * as Config from "../services/config";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
 import { CreateGithubClient } from "../services/github";
-import styled from "styled-components";
+import GithubIcon from "../assets/ico-github.png";
 
 function LayoutRadioItem({
   value,
@@ -12,9 +13,9 @@ function LayoutRadioItem({
   setter,
   children,
 }: {
-  value: "H" | "V";
-  current: "H" | "V";
-  setter: React.Dispatch<React.SetStateAction<"H" | "V">>;
+  value: Config.Layout;
+  current: Config.Layout;
+  setter: (v: Config.Layout) => void;
   children: (JSX.Element | string)[];
 }) {
   return (
@@ -59,6 +60,11 @@ export default function Setting() {
   const ghcContext = useContext(GithubClientContext);
   const layoutContext = useContext(LayoutStoreContext);
 
+  const saveLayout = (value: Config.Layout) => {
+    setLayout(value);
+    Config.setLayout(value);
+  };
+
   const [isDirty, setIsDirty] = useState(false);
   function d<T>(f: React.Dispatch<React.SetStateAction<T>>) {
     return ((v: T) => {
@@ -66,18 +72,25 @@ export default function Setting() {
       setIsDirty(true);
     }) as React.Dispatch<React.SetStateAction<T>>;
   }
-  const save = () => {
-    Config.set({
-      github: {
-        apiBase,
-        apiToken,
-      },
-      layout,
+  const saveGithub = () => {
+    Config.setGithub({
+      apiBase,
+      apiToken,
     });
     layoutContext.set(layout);
     ghcContext.set(CreateGithubClient(apiBase, apiToken));
     setIsDirty(false);
   };
+
+  const buildHash = (() => {
+    // raw values inserted by esbuild
+    const buildHashRaw = process.env.GITHUB_SHA;
+    const buildTimeRaw = process.env.BUILD_TIME;
+
+    const hash = buildHashRaw?.slice(0, 7);
+    const time = new Date(Number(buildTimeRaw)).toISOString();
+    return `${hash} at ${time}`;
+  })();
 
   return (
     <Root>
@@ -86,11 +99,11 @@ export default function Setting() {
 
         <Field>
           <Label>Layout</Label>
-          <LayoutRadioItem value="H" current={layout} setter={d(setLayout)}>
+          <LayoutRadioItem value="H" current={layout} setter={saveLayout}>
             Horizontal
             <Icon path={mdiViewSplitHorizontal} size="60px" color="gray" />
           </LayoutRadioItem>
-          <LayoutRadioItem value="V" current={layout} setter={d(setLayout)}>
+          <LayoutRadioItem value="V" current={layout} setter={saveLayout}>
             Vertical
             <Icon path={mdiViewSplitVertical} size="60px" color="gray" />
           </LayoutRadioItem>
@@ -119,13 +132,34 @@ export default function Setting() {
             placeholder="12345abcde12345abcde12345abcde12345abcde"
           ></Input>
         </Field>
+
+        <Field>
+          <SaveButton
+            isActive={isDirty}
+            disabled={!isDirty}
+            onClick={saveGithub}
+          >
+            Set
+          </SaveButton>
+        </Field>
       </Section>
 
-      <footer>
-        <ActionSaveButton isActive={isDirty} disabled={!isDirty} onClick={save}>
-          Save
-        </ActionSaveButton>
-      </footer>
+      <Section>
+        <SectionTitle>About</SectionTitle>
+
+        <Field>
+          <Label>Build</Label>
+          <Text>{buildHash}</Text>
+        </Field>
+
+        <Field>
+          <Label>Github</Label>
+          <TextLink href="https://github.com/cumet04/hubook-react">
+            <IconImg src={GithubIcon} width="24px" height="24px" />
+            https://github.com/cumet04/hubook-react
+          </TextLink>
+        </Field>
+      </Section>
     </Root>
   );
 }
@@ -152,6 +186,23 @@ const Label = styled.h2`
   font-size: 1.4rem;
 `;
 
+const Text = styled.p`
+  font-size: 1.4rem;
+`;
+
+const TextLink = styled.a`
+  display: flex;
+  width: max-content;
+  align-items: center;
+  font-size: 1.4rem;
+`;
+
+const IconImg = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+`;
+
 const Input = styled.input`
   border: solid 1px lightgray;
   padding: 4px 8px;
@@ -159,7 +210,7 @@ const Input = styled.input`
   width: 400px;
 `;
 
-const ActionSaveButton = styled.button<{ isActive: boolean }>`
+const SaveButton = styled.button<{ isActive: boolean }>`
   color: whitesmoke;
   background-color: ${({ isActive }) => (isActive ? "mediumseagreen" : "gray")};
   padding: 4px 12px;
