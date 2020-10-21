@@ -12,6 +12,7 @@ const buildOpts = {
   outfile: resolve(distPath, "index.js"),
   bundle: true,
   platform: "browser",
+  minify: env == "production",
   sourcemap: env == "dev" ? "inline" : false,
   define: { "process.env.NODE_ENV": `"${env}"` },
 };
