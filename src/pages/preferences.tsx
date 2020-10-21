@@ -82,7 +82,15 @@ export default function Setting() {
     setIsDirty(false);
   };
 
-  const buildHash = process.env.GITHUB_SHA; // value inserted by esbuild
+  const buildHash = (() => {
+    // raw values inserted by esbuild
+    const buildHashRaw = process.env.GITHUB_SHA;
+    const buildTimeRaw = process.env.BUILD_TIME;
+
+    const hash = buildHashRaw?.slice(0, 7);
+    const time = new Date(Number(buildTimeRaw)).toISOString();
+    return `${hash} at ${time}`;
+  })();
 
   return (
     <Root>

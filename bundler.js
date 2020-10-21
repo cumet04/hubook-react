@@ -15,7 +15,8 @@ const buildOpts = {
   sourcemap: env == "dev" ? "inline" : false,
   define: {
     "process.env.NODE_ENV": `"${env}"`,
-    "process.env.GITHUB_SHA": `"${process.env["GITHUB_SHA"] || "xxxxxxx"}"`,
+    "process.env.GITHUB_SHA": `"${process.env["GITHUB_SHA"] || "xxxxxxxxxx"}"`,
+    "process.env.BUILD_TIME": `"${Date.now().toString()}"`,
   },
   loader: {
     ".png": "file",
