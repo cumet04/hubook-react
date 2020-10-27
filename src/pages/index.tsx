@@ -28,7 +28,6 @@ export default function Index() {
     Issue: IssueDetail,
     PullRequest: PullRequestDetail,
     RepositoryInvitation: RepositoryInvitationDetail,
-    Release: RepositoryInvitationDetail, // TODO: impl
   }[notifications[selected]?.type];
 
   return (
