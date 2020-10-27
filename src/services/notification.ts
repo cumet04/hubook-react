@@ -18,7 +18,7 @@ const _notificationTypeDataFunc = () =>
   ([] as ActivityListNotificationsForAuthenticatedUserResponseData)[0];
 type NotificationData = ReturnType<typeof _notificationTypeDataFunc>;
 
-function parseNotification(raw: NotificationData): App.Notification {
+function parseNotification(raw: NotificationData): App.Notification | null {
   // MEMO: I have no idea what notification type can have as value,
   // and these case are only what I have been seen.
   let number: number | null = null;
@@ -28,12 +28,15 @@ function parseNotification(raw: NotificationData): App.Notification {
       number = parseInt(raw.subject.url.split("/").pop() || ""); // TODO: fix hack
     case "RepositoryInvitation":
       break;
-    case "Release":
-      break;
+    // case "Release":
+    //   break;
+    // case "CheckSuite":
+    //   break;
     default:
-      throw Error(
-        `notification subject type is unexpected: ${raw.subject.type}`
+      console.error(
+        `unsupported notification subject type: ${raw.subject.type}`
       );
+      return null;
   }
 
   return {
@@ -78,7 +81,9 @@ export async function fetchNotifications(
 
   return {
     interval: pollInterval,
-    notifications: res.data.map((raw) => parseNotification(raw)),
+    notifications: res.data
+      .map((raw) => parseNotification(raw))
+      .filter<App.Notification>((n): n is App.Notification => !!n),
   };
 }
 
