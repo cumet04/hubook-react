@@ -1,17 +1,11 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import { Route, Switch, useLocation } from "react-router-dom";
 
 import Index from "./pages/index";
 import Preferences from "./pages/preferences";
-import TheHeader, { headerHeight } from "./components/TheHeader";
+import TheHeader from "./components/TheHeader";
 
 const routes = [
-  {
-    path: "/",
-    component: Index,
-    title: "Notifications",
-  },
   {
     path: "/preferences",
     component: Preferences,
@@ -19,20 +13,25 @@ const routes = [
   },
 ];
 
-function PageHeader() {
-  // extract as a component from App for useLocation
+export default function App() {
   const current = useLocation().pathname;
   const title = routes.find((r) => r.path == current)?.title;
-  return <Title>{title}</Title>;
-}
 
-export default function App() {
-  return (
-    <BrowserRouter>
-      <div>
+  if (current == "/") {
+    return (
+      <>
         <TheHeader></TheHeader>
-        <Main>
-          <PageHeader />
+        <main>
+          <Index></Index>
+        </main>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <TheHeader></TheHeader>
+        <main className="max-w-5xl mx-auto pt-1 pb-4">
+          <h1 className="text-base text-gray-600 mb-4">{title}</h1>
           <Switch>
             {routes.map((r) => (
               <Route exact path={r.path} key={r.path}>
@@ -40,29 +39,8 @@ export default function App() {
               </Route>
             ))}
           </Switch>
-        </Main>
-      </div>
-    </BrowserRouter>
-  );
+        </main>
+      </>
+    );
+  }
 }
-
-const titleHeight = "40px";
-
-const Main = styled.main`
-  flex-grow: 1;
-  width: fit-content;
-  /* set main area height with fixed value instead of percent or flex item, for split pane */
-  height: calc(100vh - ${headerHeight});
-  padding-top: calc(8px + ${titleHeight});
-  padding-bottom: 8px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const Title = styled.div`
-  font-size: 1.4rem;
-  color: gray;
-  height: calc(${titleHeight} - 16px);
-  margin-top: calc(-1 * ${titleHeight});
-  margin-bottom: 16px;
-`;
