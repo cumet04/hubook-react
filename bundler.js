@@ -101,7 +101,7 @@ async function lap(name, func) {
 
     http.createServer(sirv(dir, opts)).listen(port, host, (err) => {
       if (err) throw err;
-      stdout.write(`dev server is ready on ${host}:${port}\n`);
+      process.stdout.write(`dev server is ready on ${host}:${port}\n`);
     });
 
     livereload.createServer().watch(dir);
