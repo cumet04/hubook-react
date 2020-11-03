@@ -1,4 +1,10 @@
 @tailwind base;
-
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .border-bottom-1 {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+}
