@@ -19,12 +19,14 @@ export default function App() {
 
   if (current == "/") {
     return (
-      <>
-        <TheHeader></TheHeader>
-        <main>
+      <div className="h-screen flex flex-col">
+        <div className="flex-shrink-0">
+          <TheHeader></TheHeader>
+        </div>
+        <main className="min-h-0">
           <Index></Index>
         </main>
-      </>
+      </div>
     );
   } else {
     return (

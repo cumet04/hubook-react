@@ -8,3 +8,11 @@
     border-bottom-style: solid;
   }
 }
+
+.with_thin_scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.with_thin_scrollbar::-webkit-scrollbar-thumb {
+  background-color: lightslategray;
+  border-radius: 5px;
+}
