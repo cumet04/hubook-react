@@ -7,6 +7,12 @@
     border-bottom-width: 1px;
     border-bottom-style: solid;
   }
+
+  .text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .with_thin_scrollbar::-webkit-scrollbar {

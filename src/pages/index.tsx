@@ -50,7 +50,7 @@ export default function Index() {
 
   return (
     <LayoutContianer layout={layoutContext.value}>
-      <ol className="h-full overflow-y-scroll with_thin_scrollbar">
+      <ol className="h-full overflow-y-scroll with_thin_scrollbar divide-y">
         {notifications.map((item, i) => (
           <NotificationListItem
             notification={item}

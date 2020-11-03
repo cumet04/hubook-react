@@ -109,7 +109,7 @@ export default function Setting() {
         <div className={sField}>
           <button
             className={
-              "rounded text-gray-100 py-1 px-3 " +
+              "rounded text-white py-1 px-3 " +
               (isDirty ? "bg-green-500" : "bg-gray-500")
             }
             disabled={!isDirty}
