@@ -1,11 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
-import styled from "styled-components";
 
 import NotificationListItem from "../components/NotificationListItem";
 import IssueDetail from "../components/IssueDetail";
 import PullRequestDetail from "../components/PullRequestDetail";
 import RepositoryInvitationDetail from "../components/RepositoryInvitationDetail";
+
+const LayoutContianer: React.FC<{ layout: "H" | "V" }> = ({
+  children,
+  layout,
+}) => {
+  const [List, Content] = React.Children.toArray(children);
+
+  const baseSize = "40%";
+  const sContainer = layout === "H" ? "flex-col" : "flex-row";
+  const sList = layout === "H" ? { height: baseSize } : { width: baseSize };
+  return (
+    <div className={"h-full w-full flex " + sContainer}>
+      <div className="flex-shrink-0" style={sList}>
+        {List}
+      </div>
+      <div className="flex-grow min-h-0 min-w-0">{Content}</div>
+    </div>
+  );
+};
 
 export default function Index() {
   const [notifications, setNotifications] = useState<App.Notification[]>([]);
@@ -31,66 +49,22 @@ export default function Index() {
   }[notifications[selected]?.type];
 
   return (
-    <Root layout={layoutContext.value}>
-      <Notifications>
-        <List>
-          {notifications.map((item, i) => (
-            <NotificationListItem
-              notification={item}
-              key={item.id}
-              isSelected={i == selected}
-              onClick={select(i)}
-            />
-          ))}
-        </List>
-      </Notifications>
-      <Separater />
+    <LayoutContianer layout={layoutContext.value}>
+      <ol className="h-full overflow-y-scroll with_thin_scrollbar divide-y">
+        {notifications.map((item, i) => (
+          <NotificationListItem
+            notification={item}
+            key={item.id}
+            isSelected={i == selected}
+            onClick={select(i)}
+          />
+        ))}
+      </ol>
       {notifications[selected] && (
-        <Content>
+        <div className="w-full h-full p-4 overflow-y-scroll">
           <DetailComponent notification={notifications[selected]} />
-        </Content>
+        </div>
       )}
-    </Root>
+    </LayoutContianer>
   );
 }
-
-const Root = styled.div<{ layout: "H" | "V" }>`
-  display: flex;
-  height: 100%;
-
-  width: ${({ layout }) =>
-    layout == "H" ? "1000px" : "calc(100vw - 2 * 24px)"};
-  flex-direction: ${({ layout }) => (layout == "H" ? "column" : "row")};
-`;
-
-const List = styled.ol`
-  height: 100%;
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: lightslategray;
-    border-radius: 5px;
-  }
-`;
-
-// MEMO: Draggable & inner-scrollable split pane is too hard to me ...
-const listSize = "40%";
-const separaterSize = "24px";
-const contentSize = `calc(100% - ${listSize} - ${separaterSize})`;
-
-const Notifications = styled.div`
-  height: ${listSize};
-`;
-const Separater = styled.div`
-  height: ${separaterSize};
-`;
-const Content = styled.div`
-  height: ${contentSize};
-  border: solid 1px lightgray;
-  border-radius: 5px;
-  padding: 16px;
-  overflow-y: scroll;
-`;

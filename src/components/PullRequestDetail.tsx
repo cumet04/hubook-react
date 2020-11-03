@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { GithubClientContext } from "../contexts";
 
 import IssueComment from "../components/IssueComment";
-import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
@@ -24,15 +23,15 @@ export default function IssueDetail(props: PropType) {
 
   return pullreq ? (
     <article>
-      <Info>
-        <Author>{pullreq.author.login}</Author>
+      <div className="text-gray-600 text-sm mb-2">
+        <span className="font-bold mr-1">{pullreq.author.login}</span>
         <span> {statusText} </span>
-        <Code>{pullreq.baseRefName}</Code>
+        <span className={sCode}>{pullreq.baseRefName}</span>
         <span> from </span>
-        <Code>{pullreq.headRefName}</Code>
+        <span className={sCode}>{pullreq.headRefName}</span>
         <span> {timeText}</span>
-      </Info>
-      <ol>
+      </div>
+      <ol className="divide-y">
         <IssueComment comment={pullreq}></IssueComment>
         {pullreq.comments.map((item) => (
           <IssueComment comment={item} key={item.id}></IssueComment>
@@ -44,21 +43,4 @@ export default function IssueDetail(props: PropType) {
   );
 }
 
-const Info = styled.div`
-  color: gray;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
-`;
-
-const Author = styled.span`
-  font-weight: bold;
-  margin-right: 0.5rem;
-`;
-
-const Code = styled.span`
-  font-family: monospace;
-  color: royalblue;
-  background-color: aliceblue;
-  padding: 2px;
-  border-radius: 2px;
-`;
+const sCode = "font-mono text-blue-600 bg-indigo-100 rounded-sm";

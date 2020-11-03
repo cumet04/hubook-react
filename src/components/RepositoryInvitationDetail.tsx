@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { GithubClientContext } from "../contexts";
-import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
 };
+
+// MEMO: style not tested
 
 export default function IssueDetail(props: PropType) {
   const [repo, setRepo] = useState<App.Repository | null>(null);
@@ -17,35 +18,19 @@ export default function IssueDetail(props: PropType) {
   }, [props.notification.id]);
 
   return repo ? (
-    <Root>
-      <Text>{repo.owner.login} invited you to collaborate</Text>
-      <TextLink href={`${repo.url}/invitations`} target="_blank">
+    <article className="flex flex-column items-center">
+      <p className="text-lg mb-6">
+        {repo.owner.login} invited you to collaborate
+      </p>
+      <a
+        className="text-white bg-green-500 px-3 py-1 rounded"
+        href={`${repo.url}/invitations`}
+        target="_blank"
+      >
         Go to invitation page
-      </TextLink>
-    </Root>
+      </a>
+    </article>
   ) : (
     <article></article>
   );
 }
-
-const Root = styled.article`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Text = styled.p`
-  font-size: 1.8rem;
-  margin-bottom: 12px;
-`;
-
-const TextLink = styled.a`
-  color: whitesmoke;
-  background-color: mediumseagreen;
-  padding: 4px 12px;
-  border-radius: 4px;
-
-  &:hover {
-    text-decoration: none;
-  }
-`;

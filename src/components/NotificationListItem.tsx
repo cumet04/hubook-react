@@ -7,7 +7,6 @@ import {
   mdiSourceMerge,
   mdiEmailOutline,
 } from "@mdi/js";
-import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
@@ -77,44 +76,24 @@ export default function NotificationListItem(props: PropType) {
     ghClient?.markReadNotification(n).then(() => setUnread(false));
   };
 
+  const sContainer =
+    "grid grid-rows-2 p-3 leading-5 border-gray-400 cursor-pointer " +
+    (props.isSelected && "bg-indigo-100");
   return (
-    <Item onClick={onClick} current={props.isSelected}>
-      <Head>
+    <li
+      className={sContainer}
+      style={{ gridTemplateColumns: "40px 1fr" }}
+      onClick={onClick}
+    >
+      <div className="row-span-2">
         {iconPath && <Icon path={iconPath} size="24px" color={iconColor} />}
-      </Head>
-      <Title isNew={unread} title={n.title}>
+      </div>
+      <div className={`text-ellipsis ${unread && "font-bold"}`} title={n.title}>
         {n.title}
-      </Title>
-      <SubTitle>{subtitle(n.subjectIdentifier)}</SubTitle>
-    </Item>
+      </div>
+      <div className="text-gray-600 text-sm">
+        {subtitle(n.subjectIdentifier)}
+      </div>
+    </li>
   );
 }
-
-const Item = styled.li<{ current: boolean }>`
-  display: grid;
-  grid-template-rows: 20px 20px;
-  grid-template-columns: 40px 1fr;
-  background-color: ${({ current }) => (current ? "lavendar" : "inherit")};
-
-  padding: 12px;
-  border-top: solid 1px lightgray;
-
-  cursor: pointer;
-`;
-
-const Title = styled.div<{ isNew: boolean }>`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: ${({ isNew }) => (isNew ? "bold" : "inherit")};
-`;
-
-const Head = styled.div`
-  grid-row: 1/3;
-  grid-column: 1;
-`;
-
-const SubTitle = styled.div`
-  color: gray;
-  font-size: 1.4rem;
-`;

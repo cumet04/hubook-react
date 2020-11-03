@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { GithubClientContext } from "../contexts";
 
 import IssueComment from "../components/IssueComment";
-import styled from "styled-components";
 
 type PropType = {
   notification: App.Notification;
@@ -23,11 +22,11 @@ export default function IssueDetail(props: PropType) {
 
   return issue ? (
     <article>
-      <Info>
-        <Author>{issue.author.login}</Author>
+      <div className="text-gray-600 text-sm mb-2">
+        <span className="font-bold mr-1">{issue.author.login}</span>
         <span>{`${statusText} at ${timeText}`}</span>
-      </Info>
-      <ol>
+      </div>
+      <ol className="divide-y">
         <IssueComment comment={issue}></IssueComment>
         {issue.comments.map((item) => (
           <IssueComment comment={item} key={item.id}></IssueComment>
@@ -38,14 +37,3 @@ export default function IssueDetail(props: PropType) {
     <article></article>
   );
 }
-
-const Info = styled.div`
-  color: gray;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
-`;
-
-const Author = styled.span`
-  font-weight: bold;
-  margin-right: 0.5rem;
-`;

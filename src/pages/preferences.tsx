@@ -1,55 +1,10 @@
 import React, { useContext, useState } from "react";
-import styled from "styled-components";
 import Icon from "@mdi/react";
 import { mdiViewSplitHorizontal, mdiViewSplitVertical } from "@mdi/js";
 import * as Config from "../services/config";
 import { GithubClientContext, LayoutStoreContext } from "../contexts";
 import { CreateGithubClient } from "../services/github";
 import GithubIcon from "../assets/ico-github.png";
-
-function LayoutRadioItem({
-  value,
-  current,
-  setter,
-  children,
-}: {
-  value: Config.Layout;
-  current: Config.Layout;
-  setter: (v: Config.Layout) => void;
-  children: (JSX.Element | string)[];
-}) {
-  return (
-    <RadioItem>
-      <RadioInput
-        type="radio"
-        name="layout"
-        id={`radio_layout_${value}`}
-        value={value}
-        checked={current == value}
-        onChange={() => setter(value)}
-      ></RadioInput>
-      <RadioLabel htmlFor={`radio_layout_${value}`}>{children}</RadioLabel>
-    </RadioItem>
-  );
-}
-
-const RadioItem = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 8px 4px;
-`;
-const RadioLabel = styled.label`
-  width: 100px; /* adjust clickable area */
-  font-size: 1.4rem;
-
-  & svg {
-    display: block;
-    margin: -8px -4px; /* adjust for icon itself's margin */
-  }
-`;
-const RadioInput = styled.input`
-  margin-right: 12px;
-`;
 
 export default function Setting() {
   const config = Config.value();
@@ -93,126 +48,102 @@ export default function Setting() {
   })();
 
   return (
-    <Root>
-      <Section>
-        <SectionTitle>Appearance</SectionTitle>
+    <article>
+      <section className={sSection}>
+        <h1 className={sSectionTitle}>Appearance</h1>
+        <div className={sField}>
+          <h2 className={sLabel}>Layout</h2>
+          {[
+            { value: "H", label: "Horizontal", icon: mdiViewSplitHorizontal },
+            { value: "V", label: "Vertical", icon: mdiViewSplitVertical },
+          ].map((l) => (
+            <div className="flex items-center mx-1 my-2">
+              <input
+                className="mr-3"
+                type="radio"
+                name="layout"
+                id={`radio_layout_${l.value}`}
+                value={l.value}
+                checked={layout == l.value}
+                onChange={() => saveLayout(l.value as Config.Layout)}
+              ></input>
+              <label htmlFor={`radio_layout_${l.value}`} className="w-24">
+                {l.label}
+                <Icon
+                  /* adjust for icon itself's margin*/
+                  style={{ margin: "-8px -4px" }}
+                  path={l.icon}
+                  size="60px"
+                  color="gray"
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+      </section>
 
-        <Field>
-          <Label>Layout</Label>
-          <LayoutRadioItem value="H" current={layout} setter={saveLayout}>
-            Horizontal
-            <Icon path={mdiViewSplitHorizontal} size="60px" color="gray" />
-          </LayoutRadioItem>
-          <LayoutRadioItem value="V" current={layout} setter={saveLayout}>
-            Vertical
-            <Icon path={mdiViewSplitVertical} size="60px" color="gray" />
-          </LayoutRadioItem>
-        </Field>
-      </Section>
-
-      <Section>
-        <SectionTitle>GitHub API</SectionTitle>
-
-        <Field>
-          <Label>API Endpoint</Label>
-          <Input
+      <section className={sSection}>
+        <h1 className={sSectionTitle}>GitHub API</h1>
+        <div className={sField}>
+          <h2 className={sLabel}>API Endpoint</h2>
+          <input
+            className={sInput}
             type="text"
             value={apiBase}
             onChange={(e) => d(setApiBase)(e.target.value)}
             placeholder="https://api.github.com or https://your.ghe.com/api"
-          ></Input>
-        </Field>
+          ></input>
+        </div>
 
-        <Field>
-          <Label>API Token</Label>
-          <Input
+        <div className={sField}>
+          <h2 className={sLabel}>API Token</h2>
+          <input
+            className={sInput}
             type="text"
             value={apiToken}
             onChange={(e) => d(setApiToken)(e.target.value)}
             placeholder="12345abcde12345abcde12345abcde12345abcde"
-          ></Input>
-        </Field>
+          ></input>
+        </div>
 
-        <Field>
-          <SaveButton
-            isActive={isDirty}
+        <div className={sField}>
+          <button
+            className={
+              "rounded text-white py-1 px-3 " +
+              (isDirty ? "bg-green-500" : "bg-gray-500")
+            }
             disabled={!isDirty}
             onClick={saveGithub}
           >
             Set
-          </SaveButton>
-        </Field>
-      </Section>
+          </button>
+        </div>
+      </section>
 
-      <Section>
-        <SectionTitle>About</SectionTitle>
+      <section className={sSection}>
+        <h1 className={sSectionTitle}>About</h1>
+        <div className={sField}>
+          <h2 className={sLabel}>Build</h2>
+          <p>{buildHash}</p>
+        </div>
 
-        <Field>
-          <Label>Build</Label>
-          <Text>{buildHash}</Text>
-        </Field>
-
-        <Field>
-          <Label>Github</Label>
-          <TextLink href="https://github.com/cumet04/hubook-react">
-            <IconImg src={GithubIcon} width="24px" height="24px" />
+        <div className={sField}>
+          <h2 className={sLabel}>Github</h2>
+          <a
+            className="flex items-center"
+            href="https://github.com/cumet04/hubook-react"
+          >
+            <img className="mr-1" src={GithubIcon} width="24px" height="24px" />
             https://github.com/cumet04/hubook-react
-          </TextLink>
-        </Field>
-      </Section>
-    </Root>
+          </a>
+        </div>
+      </section>
+    </article>
   );
 }
 
-const Root = styled.article`
-  width: 1000px;
-`;
-
-const Section = styled.section`
-  margin-bottom: 32px;
-`;
-
-const SectionTitle = styled.h1`
-  font-weight: normal;
-  border-bottom: solid 1px lightgray;
-  margin-bottom: 16px;
-`;
-
-const Field = styled.div`
-  margin-bottom: 16px;
-`;
-
-const Label = styled.h2`
-  font-size: 1.4rem;
-`;
-
-const Text = styled.p`
-  font-size: 1.4rem;
-`;
-
-const TextLink = styled.a`
-  display: flex;
-  width: max-content;
-  align-items: center;
-  font-size: 1.4rem;
-`;
-
-const IconImg = styled.img`
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-`;
-
-const Input = styled.input`
-  border: solid 1px lightgray;
-  padding: 4px 8px;
-  font-size: 1.4rem;
-  width: 400px;
-`;
-
-const SaveButton = styled.button<{ isActive: boolean }>`
-  color: whitesmoke;
-  background-color: ${({ isActive }) => (isActive ? "mediumseagreen" : "gray")};
-  padding: 4px 12px;
-  border-radius: 4px;
-`;
+const sSection = "mb-8";
+const sSectionTitle = "mb-4 text-lg border-bottom-1 border-gray-400";
+const sField = "mb-4";
+const sLabel = "font-bold";
+const sInput = "w-1/3 px-2 py-1 text-sm border border-solid border-gray-500";
