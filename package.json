@@ -2,6 +2,7 @@
   "name": "hubook-react",
   "license": "MIT",
   "private": true,
+  "files": [],
   "engines": {
     "node": "14.16.0"
   },
@@ -9,7 +10,9 @@
     "dev": "node bundler.js dev",
     "check": "tsc --noEmit",
     "build": "npm run check && node bundler.js",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "fix": "gts fix"
   },
   "dependencies": {
     "@mdi/js": "^5.9.55",
@@ -21,14 +24,16 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
+    "@types/node": "^14.11.2",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/react-router-dom": "^5.1.7",
     "chokidar": "^3.5.1",
     "esbuild": "^0.11.0",
+    "eslint-plugin-react": "^7.23.1",
+    "gts": "^3.1.0",
     "livereload": "^0.9.3",
     "postcss": "^8.2.8",
-    "prettier": "^2.2.1",
     "sirv": "^1.0.11",
     "tailwindcss": "^2.0.4",
     "typescript": "^4.2.3"
