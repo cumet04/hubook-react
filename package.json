@@ -2,6 +2,9 @@
   "name": "hubook-react",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "14.16.0"
+  },
   "scripts": {
     "dev": "node bundler.js dev",
     "check": "tsc --noEmit",

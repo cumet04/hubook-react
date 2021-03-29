@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eu
+cd $(readlink -f $0 | xargs dirname)/../.. # workplace root
+
+echo 'install dev packages:'
+npm ci
+
+echo 'install dev tools:'
+sudo npm install -g npm-check-updates
+
+echo 'done'
