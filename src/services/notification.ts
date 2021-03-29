@@ -1,5 +1,7 @@
 import {Octokit} from '@octokit/rest';
-import type {ActivityListNotificationsForAuthenticatedUserResponseData} from '@octokit/types';
+
+import {Endpoints} from '@octokit/types'; // eslint-disable-line node/no-extraneous-import
+type NotificationData = Endpoints['GET /notifications']['response']['data'][number];
 
 function octokit(base: string, token: string) {
   const res = new Octokit({
@@ -12,11 +14,6 @@ function octokit(base: string, token: string) {
 function parseDate(datestr: string) {
   return new Date(Date.parse(datestr));
 }
-
-// extract type of octokit().activity.listNotificationsForAuthenticatedUser().data
-const _notificationTypeDataFunc = () =>
-  ([] as ActivityListNotificationsForAuthenticatedUserResponseData)[0];
-type NotificationData = ReturnType<typeof _notificationTypeDataFunc>;
 
 function parseNotification(raw: NotificationData): App.Notification | null {
   // MEMO: I have no idea what notification type can have as value,
