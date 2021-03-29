@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import MarkdownContent from "../components/MarkdownContent";
+import MarkdownContent from '../components/MarkdownContent';
 
 type PropType = {
   comment: App.Comment;
@@ -9,10 +9,7 @@ type PropType = {
 export default function IssueComment(props: PropType) {
   const c = props.comment;
   return (
-    <li
-      className="relative p-3 border-gray-400"
-      style={{ paddingLeft: "56px" }}
-    >
+    <li className="relative p-3 border-gray-400" style={{paddingLeft: '56px'}}>
       <img
         className="w-10 h-10 absolute left-0"
         src={c.author.avatarUrl}

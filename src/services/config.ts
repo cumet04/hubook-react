@@ -1,6 +1,6 @@
-const storageKey = "hubook-configs";
+const storageKey = 'hubook-configs';
 
-export type Layout = "H" | "V";
+export type Layout = 'H' | 'V';
 export type GithubParams = {
   apiBase: string;
   apiToken: string;
@@ -10,24 +10,24 @@ export type ConfigType = {
   layout: Layout;
 };
 
-let config = ((): ConfigType => {
-  const raw = JSON.parse(localStorage.getItem(storageKey) || "{}");
+const config = ((): ConfigType => {
+  const raw = JSON.parse(localStorage.getItem(storageKey) || '{}');
   if (!raw) {
     return {
       github: {
-        apiBase: "",
-        apiToken: "",
+        apiBase: '',
+        apiToken: '',
       },
-      layout: "H",
+      layout: 'H',
     };
   }
 
   return {
     github: {
-      apiBase: raw.github?.apiBase || "https://api.github.com",
-      apiToken: raw.github?.apiToken || "",
+      apiBase: raw.github?.apiBase || 'https://api.github.com',
+      apiToken: raw.github?.apiToken || '',
     },
-    layout: raw.layout || "H",
+    layout: raw.layout || 'H',
   };
 })();
 

@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
-import Icon from "@mdi/react";
-import { mdiViewSplitHorizontal, mdiViewSplitVertical } from "@mdi/js";
-import * as Config from "../services/config";
-import { GithubClientContext, LayoutStoreContext } from "../contexts";
-import { CreateGithubClient } from "../services/github";
-import GithubIcon from "../assets/ico-github.png";
+import React, {useContext, useState} from 'react';
+import Icon from '@mdi/react';
+import {mdiViewSplitHorizontal, mdiViewSplitVertical} from '@mdi/js';
+import * as Config from '../services/config';
+import {GithubClientContext, LayoutStoreContext} from '../contexts';
+import {CreateGithubClient} from '../services/github';
+import GithubIcon from '../assets/ico-github.png';
 
 export default function Setting() {
   const config = Config.value();
@@ -54,24 +54,24 @@ export default function Setting() {
         <div className={sField}>
           <h2 className={sLabel}>Layout</h2>
           {[
-            { value: "H", label: "Horizontal", icon: mdiViewSplitHorizontal },
-            { value: "V", label: "Vertical", icon: mdiViewSplitVertical },
-          ].map((l) => (
-            <div className="flex items-center mx-1 my-2">
+            {value: 'H', label: 'Horizontal', icon: mdiViewSplitHorizontal},
+            {value: 'V', label: 'Vertical', icon: mdiViewSplitVertical},
+          ].map(l => (
+            <div className="flex items-center mx-1 my-2" key={l.value}>
               <input
                 className="mr-3"
                 type="radio"
                 name="layout"
                 id={`radio_layout_${l.value}`}
                 value={l.value}
-                checked={layout == l.value}
+                checked={layout === l.value}
                 onChange={() => saveLayout(l.value as Config.Layout)}
               ></input>
               <label htmlFor={`radio_layout_${l.value}`} className="w-24">
                 {l.label}
                 <Icon
                   /* adjust for icon itself's margin*/
-                  style={{ margin: "-8px -4px" }}
+                  style={{margin: '-8px -4px'}}
                   path={l.icon}
                   size="60px"
                   color="gray"
@@ -90,7 +90,7 @@ export default function Setting() {
             className={sInput}
             type="text"
             value={apiBase}
-            onChange={(e) => d(setApiBase)(e.target.value)}
+            onChange={e => d(setApiBase)(e.target.value)}
             placeholder="https://api.github.com or https://your.ghe.com/api"
           ></input>
         </div>
@@ -101,7 +101,7 @@ export default function Setting() {
             className={sInput}
             type="text"
             value={apiToken}
-            onChange={(e) => d(setApiToken)(e.target.value)}
+            onChange={e => d(setApiToken)(e.target.value)}
             placeholder="12345abcde12345abcde12345abcde12345abcde"
           ></input>
         </div>
@@ -109,8 +109,8 @@ export default function Setting() {
         <div className={sField}>
           <button
             className={
-              "rounded text-white py-1 px-3 " +
-              (isDirty ? "bg-green-500" : "bg-gray-500")
+              'rounded text-white py-1 px-3 ' +
+              (isDirty ? 'bg-green-500' : 'bg-gray-500')
             }
             disabled={!isDirty}
             onClick={saveGithub}
@@ -142,8 +142,8 @@ export default function Setting() {
   );
 }
 
-const sSection = "mb-8";
-const sSectionTitle = "mb-4 text-lg border-bottom-1 border-gray-400";
-const sField = "mb-4";
-const sLabel = "font-bold";
-const sInput = "w-1/3 px-2 py-1 text-sm border border-solid border-gray-500";
+const sSection = 'mb-8';
+const sSectionTitle = 'mb-4 text-lg border-bottom-1 border-gray-400';
+const sField = 'mb-4';
+const sLabel = 'font-bold';
+const sInput = 'w-1/3 px-2 py-1 text-sm border border-solid border-gray-500';

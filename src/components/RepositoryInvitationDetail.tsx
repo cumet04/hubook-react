@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { GithubClientContext } from "../contexts";
+import React, {useState, useEffect, useContext} from 'react';
+import {GithubClientContext} from '../contexts';
 
 type PropType = {
   notification: App.Notification;
@@ -14,7 +14,7 @@ export default function IssueDetail(props: PropType) {
   useEffect(() => {
     ghClient
       ?.fetchRepository(props.notification.subjectIdentifier)
-      ?.then((repo) => setRepo(repo));
+      ?.then(repo => setRepo(repo));
   }, [props.notification.id]);
 
   return repo ? (
@@ -26,6 +26,7 @@ export default function IssueDetail(props: PropType) {
         className="text-white bg-green-500 px-3 py-1 rounded"
         href={`${repo.url}/invitations`}
         target="_blank"
+        rel="noreferrer"
       >
         Go to invitation page
       </a>

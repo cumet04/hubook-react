@@ -1,5 +1,5 @@
-import { Octokit } from "@octokit/rest";
-import type { ActivityListNotificationsForAuthenticatedUserResponseData } from "@octokit/types";
+import {Octokit} from '@octokit/rest';
+import type {ActivityListNotificationsForAuthenticatedUserResponseData} from '@octokit/types';
 
 function octokit(base: string, token: string) {
   const res = new Octokit({
@@ -23,10 +23,11 @@ function parseNotification(raw: NotificationData): App.Notification | null {
   // and these case are only what I have been seen.
   let number: number | null = null;
   switch (raw.subject.type) {
-    case "Issue":
-    case "PullRequest":
-      number = parseInt(raw.subject.url.split("/").pop() || ""); // TODO: fix hack
-    case "RepositoryInvitation":
+    /* eslint-disable no-fallthrough */
+    case 'Issue':
+    case 'PullRequest':
+      number = parseInt(raw.subject.url.split('/').pop() || ''); // TODO: fix hack
+    case 'RepositoryInvitation':
       break;
     // case "Release":
     //   break;
@@ -37,6 +38,7 @@ function parseNotification(raw: NotificationData): App.Notification | null {
         `unsupported notification subject type: ${raw.subject.type}`
       );
       return null;
+    /* eslint-enable no-fallthrough */
   }
 
   return {
@@ -61,28 +63,28 @@ export async function fetchNotifications(
   since?: Date
 ) {
   const op = Object.assign(
-    { all: true },
-    since ? { since: since.toISOString() } : {}
+    {all: true},
+    since ? {since: since.toISOString()} : {}
   );
   const res = await octokit(
     apiBase,
     apiToken
   ).activity.listNotificationsForAuthenticatedUser(op);
-  if (res.status != 200) {
+  if (res.status !== 200) {
     console.debug(res);
-    throw Error("get notifications failed");
+    throw Error('get notifications failed');
   }
 
   const pollInterval = (() => {
-    const raw = res.headers["x-poll-interval"];
-    if (raw === undefined) throw Error("x-poll-interval is not found");
-    return typeof raw === "number" ? raw : parseInt(raw);
+    const raw = res.headers['x-poll-interval'];
+    if (raw === undefined) throw Error('x-poll-interval is not found');
+    return typeof raw === 'number' ? raw : parseInt(raw);
   })();
 
   return {
     interval: pollInterval,
     notifications: res.data
-      .map((raw) => parseNotification(raw))
+      .map(raw => parseNotification(raw))
       .filter<App.Notification>((n): n is App.Notification => !!n),
   };
 }
@@ -95,10 +97,10 @@ export async function markReadNotification(
   const res = await octokit(apiBase, apiToken).activity.markThreadAsRead({
     thread_id: targetId,
   });
-  if (res.status != 205) {
-    console.debug(res);
-    throw Error("mark as read notification failed");
-  }
+  // if (res.status !== 205) {
+  //   console.debug(res);
+  //   throw Error('mark as read notification failed');
+  // }
 }
 
 // MEMO: Currently, GitHub provides no API to mark as unread, mark/unmark as Done/Save.

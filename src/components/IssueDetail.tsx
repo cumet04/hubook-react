@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import { GithubClientContext } from "../contexts";
+import React, {useState, useEffect, useContext} from 'react';
+import {GithubClientContext} from '../contexts';
 
-import IssueComment from "../components/IssueComment";
+import IssueComment from '../components/IssueComment';
 
 type PropType = {
   notification: App.Notification;
@@ -14,10 +14,10 @@ export default function IssueDetail(props: PropType) {
   useEffect(() => {
     ghClient
       ?.fetchIssue(props.notification.subjectIdentifier)
-      ?.then((issue) => setIssue(issue));
+      ?.then(issue => setIssue(issue));
   }, [props.notification.id]);
 
-  const statusText = "opened this issue";
+  const statusText = 'opened this issue';
   const timeText = issue?.publishedAt.toLocaleString();
 
   return issue ? (
@@ -28,7 +28,7 @@ export default function IssueDetail(props: PropType) {
       </div>
       <ol className="divide-y">
         <IssueComment comment={issue}></IssueComment>
-        {issue.comments.map((item) => (
+        {issue.comments.map(item => (
           <IssueComment comment={item} key={item.id}></IssueComment>
         ))}
       </ol>

@@ -1,23 +1,23 @@
-import React from "react";
-import { Route, Switch, useLocation } from "react-router-dom";
+import React from 'react';
+import {Route, Switch, useLocation} from 'react-router-dom';
 
-import Index from "./pages/index";
-import Preferences from "./pages/preferences";
-import TheHeader from "./components/TheHeader";
+import Index from './pages/index';
+import Preferences from './pages/preferences';
+import TheHeader from './components/TheHeader';
 
 const routes = [
   {
-    path: "/preferences",
+    path: '/preferences',
     component: Preferences,
-    title: "Preferences",
+    title: 'Preferences',
   },
 ];
 
 export default function App() {
   const current = useLocation().pathname;
-  const title = routes.find((r) => r.path == current)?.title;
+  const title = routes.find(r => r.path === current)?.title;
 
-  if (current == "/") {
+  if (current === '/') {
     return (
       <div className="h-screen flex flex-col">
         <div className="flex-shrink-0">
@@ -35,7 +35,7 @@ export default function App() {
         <main className="max-w-5xl mx-auto pt-1 pb-4">
           <h1 className="text-base text-gray-600 mb-4">{title}</h1>
           <Switch>
-            {routes.map((r) => (
+            {routes.map(r => (
               <Route exact path={r.path} key={r.path}>
                 <r.component />
               </Route>

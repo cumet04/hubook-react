@@ -1,22 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
-import { GithubClientContext, LayoutStoreContext } from "../contexts";
+import React, {useState, useEffect, useContext} from 'react';
+import {GithubClientContext, LayoutStoreContext} from '../contexts';
 
-import NotificationListItem from "../components/NotificationListItem";
-import IssueDetail from "../components/IssueDetail";
-import PullRequestDetail from "../components/PullRequestDetail";
-import RepositoryInvitationDetail from "../components/RepositoryInvitationDetail";
+import NotificationListItem from '../components/NotificationListItem';
+import IssueDetail from '../components/IssueDetail';
+import PullRequestDetail from '../components/PullRequestDetail';
+import RepositoryInvitationDetail from '../components/RepositoryInvitationDetail';
 
-const LayoutContianer: React.FC<{ layout: "H" | "V" }> = ({
-  children,
-  layout,
-}) => {
+const LayoutContianer: React.FC<{layout: 'H' | 'V'}> = ({children, layout}) => {
   const [List, Content] = React.Children.toArray(children);
 
-  const baseSize = "40%";
-  const sContainer = layout === "H" ? "flex-col" : "flex-row";
-  const sList = layout === "H" ? { height: baseSize } : { width: baseSize };
+  const baseSize = '40%';
+  const sContainer = layout === 'H' ? 'flex-col' : 'flex-row';
+  const sList = layout === 'H' ? {height: baseSize} : {width: baseSize};
   return (
-    <div className={"h-full w-full flex " + sContainer}>
+    <div className={'h-full w-full flex ' + sContainer}>
       <div className="flex-shrink-0" style={sList}>
         {List}
       </div>
@@ -31,7 +28,7 @@ export default function Index() {
 
   const ghClient = useContext(GithubClientContext).value;
   useEffect(() => {
-    ghClient?.fetchNotifications()?.then((resp) => {
+    ghClient?.fetchNotifications()?.then(resp => {
       setNotifications(resp.notifications);
     });
   }, [ghClient]);
@@ -55,7 +52,7 @@ export default function Index() {
           <NotificationListItem
             notification={item}
             key={item.id}
-            isSelected={i == selected}
+            isSelected={i === selected}
             onClick={select(i)}
           />
         ))}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import { GithubClientContext } from "../contexts";
+import React, {useState, useEffect, useContext} from 'react';
+import {GithubClientContext} from '../contexts';
 
-import IssueComment from "../components/IssueComment";
+import IssueComment from '../components/IssueComment';
 
 type PropType = {
   notification: App.Notification;
@@ -14,11 +14,11 @@ export default function IssueDetail(props: PropType) {
   useEffect(() => {
     ghClient
       ?.fetchPullRequest(props.notification.subjectIdentifier)
-      ?.then((pullreq) => setPullreq(pullreq));
+      ?.then(pullreq => setPullreq(pullreq));
   }, [props.notification.id]);
 
   const statusText =
-    pullreq?.status == "merged" ? "merged into" : "wants to merge into";
+    pullreq?.status === 'merged' ? 'merged into' : 'wants to merge into';
   const timeText = pullreq?.publishedAt.toLocaleString();
 
   return pullreq ? (
@@ -33,7 +33,7 @@ export default function IssueDetail(props: PropType) {
       </div>
       <ol className="divide-y">
         <IssueComment comment={pullreq}></IssueComment>
-        {pullreq.comments.map((item) => (
+        {pullreq.comments.map(item => (
           <IssueComment comment={item} key={item.id}></IssueComment>
         ))}
       </ol>
@@ -43,4 +43,4 @@ export default function IssueDetail(props: PropType) {
   );
 }
 
-const sCode = "font-mono text-blue-600 bg-indigo-100 rounded-sm";
+const sCode = 'font-mono text-blue-600 bg-indigo-100 rounded-sm';

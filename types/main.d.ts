@@ -18,7 +18,7 @@ declare namespace App {
   };
 
   type Repository = {
-    type: "Repository";
+    type: 'Repository';
     id: string;
     identifier: Identifier;
     name: string;
@@ -27,11 +27,11 @@ declare namespace App {
   };
 
   type Issue = {
-    type: "Issue";
+    type: 'Issue';
     id: string;
     identifier: Identifier;
     title: string;
-    status: "open" | "closed";
+    status: 'open' | 'closed';
     author: Author;
     body: string;
     publishedAt: Date;
@@ -40,13 +40,13 @@ declare namespace App {
   };
 
   type PullRequest = {
-    type: "PullRequest";
+    type: 'PullRequest';
     id: string;
     identifier: Identifier;
     title: string;
     baseRefName: string;
     headRefName: string;
-    status: "open" | "draft" | "merged" | "closed";
+    status: 'open' | 'draft' | 'merged' | 'closed';
     author: Author;
     body: string;
     publishedAt: Date;
@@ -58,7 +58,7 @@ declare namespace App {
     id: number;
     updatedAt: Date;
     title: string;
-    type: "Issue" | "PullRequest" | "RepositoryInvitation";
+    type: 'Issue' | 'PullRequest' | 'RepositoryInvitation';
     subjectIdentifier: Identifier;
     unread: boolean;
   };

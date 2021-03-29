@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { mdiCog } from "@mdi/js";
-import Icon from "@mdi/react";
+import React from 'react';
+import {Link} from 'react-router-dom';
+import {mdiCog} from '@mdi/js';
+import Icon from '@mdi/react';
 
 export default function TheHeader() {
   return (
@@ -21,4 +21,4 @@ export default function TheHeader() {
 }
 
 const sPreferenceHover =
-  "rounded-full transition-colors duration-200 bg-white hover:bg-gray-400";
+  'rounded-full transition-colors duration-200 bg-white hover:bg-gray-400';

@@ -1,10 +1,10 @@
-import { graphql } from "@octokit/graphql";
+import {graphql} from '@octokit/graphql';
 import type {
   Repository,
   IssueCommentConnection,
   IssueComment,
   Actor,
-} from "./github-v4";
+} from './github-v4';
 
 interface TQueryResult {
   repository: Repository;
@@ -49,7 +49,7 @@ function parseDate(datestr: string) {
 function mapAuthorData(actor: Actor | null | undefined): App.Author {
   if (!actor) {
     console.debug(actor);
-    throw Error("author is empty");
+    throw Error('author is empty');
   }
 
   return {
@@ -64,7 +64,7 @@ function mapCommentsData(comments: IssueCommentConnection) {
     comments.nodes?.filter((raw): raw is IssueComment => raw !== null) || [];
   return {
     comments: raws.map(
-      (raw) =>
+      raw =>
         ({
           id: raw.id,
           author: mapAuthorData(raw.author),
@@ -79,7 +79,7 @@ function mapCommentsData(comments: IssueCommentConnection) {
 export async function fetchRepository(
   apiBase: string,
   apiToken: string,
-  { owner, name }: App.Identifier
+  {owner, name}: App.Identifier
 ): Promise<App.Repository> {
   const q = `
     query {
@@ -97,13 +97,13 @@ export async function fetchRepository(
   const raw = await query(apiBase, apiToken, q);
   if (!raw) {
     console.debug(raw);
-    throw Error("request repository failed");
+    throw Error('request repository failed');
   }
 
   return {
-    type: "Repository",
+    type: 'Repository',
     id: raw.id,
-    identifier: { owner, name, number: null },
+    identifier: {owner, name, number: null},
     name: raw.name,
     owner: mapAuthorData(raw.owner),
     url: raw.url,
@@ -113,7 +113,7 @@ export async function fetchRepository(
 export async function fetchIssue(
   apiBase: string,
   apiToken: string,
-  { owner, name, number }: App.Identifier
+  {owner, name, number}: App.Identifier
 ): Promise<App.Issue> {
   const per = 5;
   const q = `
@@ -135,15 +135,15 @@ export async function fetchIssue(
   const raw = (await query(apiBase, apiToken, q)).issue;
   if (!raw) {
     console.debug(raw);
-    throw Error("request issue failed");
+    throw Error('request issue failed');
   }
 
   return {
-    type: "Issue",
+    type: 'Issue',
     id: raw.id,
-    identifier: { owner, name, number },
+    identifier: {owner, name, number},
     title: raw.title,
-    status: raw.closed ? "closed" : "open",
+    status: raw.closed ? 'closed' : 'open',
     author: mapAuthorData(raw.author),
     body: raw.bodyHTML,
     publishedAt: parseDate(raw.publishedAt),
@@ -154,7 +154,7 @@ export async function fetchIssue(
 export async function fetchPullRequest(
   apiBase: string,
   apiToken: string,
-  { owner, name, number }: App.Identifier
+  {owner, name, number}: App.Identifier
 ): Promise<App.PullRequest> {
   const per = 5;
   const q = `
@@ -180,21 +180,21 @@ export async function fetchPullRequest(
   const raw = (await query(apiBase, apiToken, q)).pullRequest;
   if (!raw) {
     console.debug(raw);
-    throw Error("request pullrequest failed");
+    throw Error('request pullrequest failed');
   }
 
   return {
-    type: "PullRequest",
+    type: 'PullRequest',
     id: raw.id,
-    identifier: { owner, name, number },
+    identifier: {owner, name, number},
     title: raw.title,
     baseRefName: raw.baseRefName,
     headRefName: raw.headRefName,
     status: (() => {
-      if (raw.merged) return "merged";
-      if (raw.isDraft) return "draft";
-      if (raw.closed) return "closed";
-      return "open";
+      if (raw.merged) return 'merged';
+      if (raw.isDraft) return 'draft';
+      if (raw.closed) return 'closed';
+      return 'open';
     })(),
     author: mapAuthorData(raw.author),
     body: raw.bodyHTML,

@@ -1,8 +1,8 @@
-import { fetchRepository, fetchIssue, fetchPullRequest } from "./repository";
-import { fetchNotifications, markReadNotification } from "./notification";
+import {fetchRepository, fetchIssue, fetchPullRequest} from './repository';
+import {fetchNotifications, markReadNotification} from './notification';
 
 class Cache<T> {
-  cache: { [key: string]: T } = {};
+  cache: {[key: string]: T} = {};
   keygen: (o: T) => string;
 
   constructor(keygen: (o: T) => string) {
